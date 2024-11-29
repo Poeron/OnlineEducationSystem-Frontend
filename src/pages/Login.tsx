@@ -10,6 +10,7 @@ import {
 } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { post } from "../services/ApiHelper";
 
 interface LoginFormValues {
   email: string;
@@ -19,8 +20,29 @@ interface LoginFormValues {
 const Login: React.FC = () => {
   const { register, handleSubmit } = useForm<LoginFormValues>();
 
-  const onSubmit = (data: LoginFormValues) => {
-    console.log("Login Data:", data);
+  const onSubmit = async (data: LoginFormValues) => {
+    console.log(data);
+    try {
+      const response = await post("/Auth/login", data);
+      if (response.token) {
+        localStorage.setItem("token", response.token);
+        if (response.role === "student") {
+          window.location.href = "/home";
+        } else if (response.role === "admin") {
+          window.location.href = "/admin";
+        } else if (response.role === "teacher") {
+          window.location.href = "/teacher";
+        } else {
+          window.location.href = "/login";
+        }
+      } else {
+        const error = await response.json();
+        alert(error.message);
+      }
+    } catch (e) {
+      alert("Something went wrong");
+      console.log(e);
+    }
   };
 
   return (
