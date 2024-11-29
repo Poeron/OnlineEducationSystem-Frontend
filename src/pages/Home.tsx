@@ -1,23 +1,43 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { Button } from "@/components/ui/button";
 
 const Home: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div>
       <Navbar />
       <div className="grid grid-cols-2 gap-4 p-8">
-        <button className="p-8 bg-blue-500 text-white rounded">
+        <Button
+          color="blue"
+          className="text-5xl p-44 bg-blue-500 text-white rounded"
+          onClick={() => navigate("/mycourses")}
+        >
           Kurslarım
-        </button>
-        <button className="p-8 bg-green-500 text-white rounded">
+        </Button>
+        <Button
+          color="green"
+          className="text-5xl p-44 bg-green-500 text-white rounded"
+          onClick={() => navigate("/allcourses")}
+        >
           Tüm Kurslar
-        </button>
-        <button className="p-8 bg-yellow-500 text-white rounded">
+        </Button>
+        <Button
+          color="yellow"
+          className="text-5xl p-44 bg-yellow-500 text-white rounded"
+          onClick={() => navigate("/assignments")}
+        >
           Ödevler
-        </button>
-        <button className="p-8 bg-red-500 text-white rounded">
+        </Button>
+        <Button
+          color="red"
+          className="text-5xl p-44 bg-red-500 text-white rounded"
+          onClick={() => navigate("/certificates")}
+        >
           Sertifikalar
-        </button>
+        </Button>
       </div>
     </div>
   );
