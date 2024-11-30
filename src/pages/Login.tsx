@@ -36,8 +36,8 @@ const Login: React.FC = () => {
           case "student":
             navigate("/student/home");
             break;
-          case "teacher":
-            navigate("/teacher/home");
+          case "instructor":
+            navigate("/instructor/home");
             break;
           case "admin":
             navigate("/admin/home");

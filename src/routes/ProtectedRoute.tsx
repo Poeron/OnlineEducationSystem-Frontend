@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 
 interface ProtectedRouteProps {
   children: JSX.Element;
-  role: "student" | "teacher";
+  role: "student" | "instructor";
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, role }) => {
@@ -17,7 +17,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, role }) => {
 
   if (user.role !== role) {
     const redirectPath =
-      user.role === "student" ? "/student/home" : "/teacher/home";
+      user.role === "student" ? "/student/home" : "/instructor/home";
     return <Navigate to={redirectPath} state={{ from: location }} />;
   }
 

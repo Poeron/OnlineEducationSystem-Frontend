@@ -95,7 +95,7 @@ const Materials: React.FC = () => {
             ))}
           </TableBody>
         </Table>
-        {userRole === "teacher" && (
+        {userRole === "instructor" && (
           <Button className="mt-8 bg-green-500 text-white p-4 rounded">
             Yeni Materyal Ekle
           </Button>

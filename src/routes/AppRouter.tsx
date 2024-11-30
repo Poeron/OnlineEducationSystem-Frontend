@@ -13,13 +13,13 @@ import Quiz from "@/pages/Quiz";
 import AllCourses from "@/pages/AllCourses";
 import CourseRegistration from "@/pages/CourseRegistration";
 import AllAssignments from "@/pages/AllAssigments";
-import TeacherHome from "@/pages/Forum";
-import TeacherCourses from "@/pages/Forum";
-import TeacherCourseDetails from "@/pages/Forum";
-import TeacherMaterials from "@/pages/Forum";
-import TeacherAssignments from "@/pages/Forum";
-import TeacherForum from "@/pages/Forum";
-import TeacherQuiz from "@/pages/Forum";
+import InstructorHome from "@/pages/Forum";
+import InstructorCourses from "@/pages/Forum";
+import InstructorCourseDetails from "@/pages/Forum";
+import InstructorMaterials from "@/pages/Forum";
+import InstructorAssignments from "@/pages/Forum";
+import InstructorForum from "@/pages/Forum";
+import InstructorQuiz from "@/pages/Forum";
 
 const AppRouter: React.FC = () => {
   return (
@@ -58,33 +58,33 @@ const AppRouter: React.FC = () => {
           }
         />
 
-        {/* Teacher Routes */}
+        {/* Instructor Routes */}
         <Route
-          path="/teacher/*"
+          path="/instructor/*"
           element={
-            <ProtectedRoute role="teacher">
+            <ProtectedRoute role="instructor">
               <Routes>
-                <Route path="home" element={<TeacherHome />} />
-                <Route path="courses" element={<TeacherCourses />} />
+                <Route path="home" element={<InstructorHome />} />
+                <Route path="courses" element={<InstructorCourses />} />
                 <Route
                   path="courses/:courseId"
-                  element={<TeacherCourseDetails />}
+                  element={<InstructorCourseDetails />}
                 />
                 <Route
                   path="courses/:courseId/materials"
-                  element={<TeacherMaterials />}
+                  element={<InstructorMaterials />}
                 />
                 <Route
                   path="courses/:courseId/assignments"
-                  element={<TeacherAssignments />}
+                  element={<InstructorAssignments />}
                 />
                 <Route
                   path="courses/:courseId/quiz"
-                  element={<TeacherQuiz />}
+                  element={<InstructorQuiz />}
                 />
                 <Route
                   path="courses/:courseId/forum"
-                  element={<TeacherForum />}
+                  element={<InstructorForum />}
                 />
               </Routes>
             </ProtectedRoute>
