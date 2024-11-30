@@ -1,6 +1,6 @@
-// Login.tsx
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -19,29 +19,39 @@ interface LoginFormValues {
 
 const Login: React.FC = () => {
   const { register, handleSubmit } = useForm<LoginFormValues>();
+  const navigate = useNavigate();
 
   const onSubmit = async (data: LoginFormValues) => {
-    console.log(data);
     try {
+      // API'ye istek yap
       const response = await post("/Auth/login", data);
+
+      // Eğer token varsa (başarılı login)
       if (response.token) {
+        // Token'ı localStorage'a kaydet
         localStorage.setItem("token", response.token);
-        if (response.role === "student") {
-          window.location.href = "/home";
-        } else if (response.role === "admin") {
-          window.location.href = "/admin";
-        } else if (response.role === "teacher") {
-          window.location.href = "/teacher";
-        } else {
-          window.location.href = "/login";
+
+        // Kullanıcının rolüne göre yönlendirme yap
+        switch (response.role) {
+          case "student":
+            navigate("/student/home");
+            break;
+          case "teacher":
+            navigate("/teacher/home");
+            break;
+          case "admin":
+            navigate("/admin/home");
+            break;
+          default:
+            navigate("/login");
+            break;
         }
       } else {
-        const error = await response.json();
-        alert(error.message);
+        alert("Invalid login credentials. Please try again.");
       }
-    } catch (e) {
-      alert("Something went wrong");
-      console.log(e);
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Something went wrong. Please try again later.");
     }
   };
 
@@ -60,7 +70,7 @@ const Login: React.FC = () => {
                 id="email"
                 type="email"
                 placeholder="Enter your email"
-                {...register("email")}
+                {...register("email", { required: "Email is required" })}
               />
             </div>
             <div>
@@ -69,7 +79,7 @@ const Login: React.FC = () => {
                 id="password"
                 type="password"
                 placeholder="Enter your password"
-                {...register("password")}
+                {...register("password", { required: "Password is required" })}
               />
             </div>
             <Button type="submit" className="w-full">

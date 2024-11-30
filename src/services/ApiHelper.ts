@@ -2,7 +2,7 @@ import { getAuthHeaders } from "./AuthHelper";
 import { URL } from "../lib/constants";
 
 export const get = async (url: string) => {
-  const response = await fetch(URL+url, {
+  const response = await fetch(URL + url, {
     method: "GET",
     headers: getAuthHeaders(),
   });
@@ -14,21 +14,35 @@ export const get = async (url: string) => {
   return response.json();
 };
 
-export const post = async (url: string, body?: any) => {
-  const response = await fetch(URL+url, {
+export const post = async (url: string, body?: unknown) => {
+  if (typeof body !== "object" || body === null) {
+    throw new Error("Body must be an object");
+  }
+
+  const response = await fetch(URL + url, {
     method: "POST",
     headers: getAuthHeaders(),
-    body: body ? JSON.stringify(body) : undefined,
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  return response.json();
+
+  const text = await response.text();
+  if (!text) {
+    return {}; 
+  }
+
+  return JSON.parse(text);
 };
 
-export const put = async (url: string, body?: any) => {
-  const response = await fetch(URL+url, {
+export const put = async (url: string, body?: Record<string, unknown>) => {
+  if (body && typeof body !== "object") {
+    throw new Error("Body must be an object");
+  }
+
+  const response = await fetch(URL + url, {
     method: "PUT",
     headers: getAuthHeaders(),
     body: body ? JSON.stringify(body) : undefined,
@@ -38,11 +52,16 @@ export const put = async (url: string, body?: any) => {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  return response.json();
+  const text = await response.text();
+  if (!text) {
+    return {}; 
+  }
+
+  return JSON.parse(text);
 };
 
 export const remove = async (url: string) => {
-  const response = await fetch(URL+url, {
+  const response = await fetch(URL + url, {
     method: "DELETE",
     headers: getAuthHeaders(),
   });

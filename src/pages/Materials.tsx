@@ -9,9 +9,10 @@ import {
   TableRow,
   TableHead,
   TableCell,
-} from "@/components/ui/table"; // Shadowed Table component
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-// import axios from "axios";
+import { get } from "@/services/ApiHelper"; // API Helper importu
+import { jwtDecode } from "jwt-decode";
 
 interface Material {
   id: number;
@@ -21,48 +22,37 @@ interface Material {
   link: string;
 }
 
+interface DecodedToken {
+  role: string;
+}
+
 const Materials: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const [materials, setMaterials] = useState<Material[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [userRole, setUserRole] = useState<string>("");
 
   useEffect(() => {
-    // API'den kurs materyallerini getir
+    const fetchUserRole = () => {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        const decodedToken: DecodedToken = jwtDecode(token);
+        setUserRole(decodedToken.role);
+      }
+    };
+
     const fetchMaterials = async () => {
       try {
-        // Mock data kullanılıyor
-        const mockMaterials = [
-          {
-            id: 1,
-            name: "ATG2.pdf",
-            dateModified: "25 Eylül",
-            author: "MÜGE ÖZÇEVİK",
-            link: "#",
-          },
-          {
-            id: 2,
-            name: "Chapter_1_v8.2.pptx",
-            dateModified: "16 Eylül",
-            author: "MÜGE ÖZÇEVİK",
-            link: "#",
-          },
-          {
-            id: 3,
-            name: "Chapter_2_v8.2.pptx",
-            dateModified: "16 Eylül",
-            author: "MÜGE ÖZÇEVİK",
-            link: "#",
-          },
-        ];
-        // const response = await axios.get(`/api/courses/${courseId}/materials`);
-        // setMaterials(response.data);
-        setMaterials(mockMaterials);
+        const data = await get(`/courses/${courseId}/materials`);
+        setMaterials(data);
       } catch (error) {
         console.error("Materyaller yüklenirken hata oluştu:", error);
       } finally {
         setLoading(false);
       }
     };
+
+    fetchUserRole();
     fetchMaterials();
   }, [courseId]);
 
@@ -105,6 +95,11 @@ const Materials: React.FC = () => {
             ))}
           </TableBody>
         </Table>
+        {userRole === "teacher" && (
+          <Button className="mt-8 bg-green-500 text-white p-4 rounded">
+            Yeni Materyal Ekle
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -1,12 +1,26 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
-const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
-  const { token } = useAuth();
-  if (!token) {
+interface ProtectedRouteProps {
+  children: JSX.Element;
+  role: "student" | "teacher";
+}
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, role }) => {
+  const { token, user } = useAuth();
+  const location = useLocation();
+
+  if (!token || !user) {
     return <Navigate to="/login" />;
   }
+
+  if (user.role !== role) {
+    const redirectPath =
+      user.role === "student" ? "/student/home" : "/teacher/home";
+    return <Navigate to={redirectPath} state={{ from: location }} />;
+  }
+
   return children;
 };
 

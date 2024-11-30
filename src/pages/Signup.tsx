@@ -1,6 +1,6 @@
-// Signup.tsx
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import {
   Card,
@@ -10,18 +10,34 @@ import {
 } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { post } from "@/services/ApiHelper";
 
-interface SignupFormValues {
+interface SignupFormValues extends Record<string, unknown> {
   name: string;
   email: string;
   password: string;
+  role?: string; // Role opsiyonel olarak tanımlandı
 }
 
 const Signup: React.FC = () => {
-  const { register, handleSubmit } = useForm<SignupFormValues>();
+  const { register, handleSubmit, reset } = useForm<SignupFormValues>();
+  const navigate = useNavigate();
 
-  const onSubmit = (data: SignupFormValues) => {
-    console.log("Signup Data:", data);
+  const onSubmit = async (data: SignupFormValues) => {
+    try {
+      if (!data.role) {
+        data.role = "student";
+      }
+
+      await post("/Auth/register", data);
+      alert("Signup successful. Please login to continue.");
+      navigate("/login");
+    } catch (error) {
+      console.error("Signup error:", (error as Error)?.message || error);
+      alert("Signup failed. Please try again.");
+    } finally {
+      reset();
+    }
   };
 
   return (
@@ -39,7 +55,7 @@ const Signup: React.FC = () => {
                 id="name"
                 type="text"
                 placeholder="Enter your name"
-                {...register("name")}
+                {...register("name", { required: "Name is required" })}
               />
             </div>
             <div>
@@ -48,7 +64,7 @@ const Signup: React.FC = () => {
                 id="email"
                 type="email"
                 placeholder="Enter your email"
-                {...register("email")}
+                {...register("email", { required: "Email is required" })}
               />
             </div>
             <div>
@@ -57,7 +73,7 @@ const Signup: React.FC = () => {
                 id="password"
                 type="password"
                 placeholder="Enter your password"
-                {...register("password")}
+                {...register("password", { required: "Password is required" })}
               />
             </div>
             <Button type="submit" className="w-full">
