@@ -48,13 +48,17 @@ const CourseRegistration: React.FC = () => {
         const decodedToken: DecodedToken = jwtDecode(token);
         const studentId = decodedToken.user_id;
 
+        // API isteği için gereken body oluştur
         const requestBody = {
           course_id: parseInt(courseId ?? "", 10),
           student_id: studentId,
         };
 
+        // Kayıt isteğini yap
         await post("/CourseEnrollments", requestBody);
-        navigate(`/courses/${courseId}`);
+        navigate(`/student/courses/${courseId}`);
+      } else {
+        setError("Kullanıcı girişi yapılmadı. Lütfen giriş yapın.");
       }
     } catch (error) {
       console.error("Kursa kayıt olurken hata oluştu:", error);
