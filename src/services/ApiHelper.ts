@@ -14,45 +14,20 @@ export const get = async (url: string) => {
   return response.json();
 };
 
-export const post = async (
-  url: string,
-  body?: FormData | Record<string, unknown>
-) => {
-  const headers = getAuthHeaders();
-  let requestBody;
-
-  if (body instanceof FormData) {
-    requestBody = body;
-  } else if (typeof body === "object") {
-    requestBody = JSON.stringify(body);
-    headers["Content-Type"] = "application/json";
-  } else {
-    throw new Error("Body must be an object or FormData");
-  }
-
+export const post = async (url: string, body?: any) => {
   const response = await fetch(URL + url, {
     method: "POST",
-    headers: headers,
-    body: requestBody,
+    headers: getAuthHeaders(),
+    body: body ? JSON.stringify(body) : undefined,
   });
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-
-  const text = await response.text();
-  if (!text) {
-    return {};
-  }
-
-  return JSON.parse(text);
+  return response.json();
 };
 
-export const put = async (url: string, body?: Record<string, unknown>) => {
-  if (body && typeof body !== "object" && body !== undefined) {
-    throw new Error("Body must be an object");
-  }
-
+export const put = async (url: string, body?: any) => {
   const response = await fetch(URL + url, {
     method: "PUT",
     headers: getAuthHeaders(),
@@ -63,12 +38,7 @@ export const put = async (url: string, body?: Record<string, unknown>) => {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  const text = await response.text();
-  if (!text) {
-    return {};
-  }
-
-  return JSON.parse(text);
+  return response.json();
 };
 
 export const remove = async (url: string) => {

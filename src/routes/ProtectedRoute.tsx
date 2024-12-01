@@ -13,11 +13,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, role }) => {
   const location = useLocation();
 
   if (!token) {
-    console.log("No token found");
     return <Navigate to="/login" />;
   }
 
-  const user: any = jwtDecode(token);
+  interface User {
+    role: "student" | "instructor" | "admin";
+  }
+
+  const user: User = jwtDecode<User>(token);
 
   if (user.role !== role) {
     let redirectPath = "/";

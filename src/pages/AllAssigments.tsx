@@ -16,7 +16,6 @@ const AssignmentsPage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Mock veri kullanılıyor
     const mockAssignments = [
       {
         courseId: 1,
