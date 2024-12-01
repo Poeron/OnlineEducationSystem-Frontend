@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import { Button } from "@/components/ui/button";
+import { useParams } from "react-router-dom";
+import { get, post } from "@/services/ApiHelper";
 
 interface AssignmentData {
   title: string;
@@ -9,21 +11,34 @@ interface AssignmentData {
 }
 
 const AssignmentPage: React.FC = () => {
+  const { courseId } = useParams<{ courseId: string }>();
   const [file, setFile] = useState<File | null>(null);
   const [assignmentData, setAssignmentData] = useState<AssignmentData | null>(
     null
   );
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Mock assignment data
-    const mockData = {
-      title: "Proje Ödevi",
-      deadline: "9 Haziran 2023 23:59",
-      instructions:
-        "Arkadaşlar merhaba, ödevinizde el yazısı ile yaptığınız sayfaları taratıp pdf olarak birleştirerek 9 Haziran Cuma günü gece 00.00'a kadar yükleyebilirsiniz.",
+    const fetchAssignment = async () => {
+      try {
+        // Ödev verilerini almak için API isteği
+        const data = await get(`/Assignments/${courseId}`);
+        if (data) {
+          setAssignmentData(data);
+        } else {
+          setError("Bu kurs için ödev bulunmamaktadır.");
+        }
+      } catch (error) {
+        console.error("Ödev verileri yüklenirken hata oluştu:", error);
+        setError("Ödev verileri yüklenirken bir hata oluştu.");
+      } finally {
+        setLoading(false);
+      }
     };
-    setAssignmentData(mockData);
-  }, []);
+
+    fetchAssignment();
+  }, [courseId]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -31,15 +46,47 @@ const AssignmentPage: React.FC = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (file) {
-      // Dosya gönderme işlemi yapılacak
-      console.log("Dosya gönderiliyor:", file.name);
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        // Ödevi yüklemek için API isteği
+        await post(`/Assignments/${courseId}`, formData);
+
+        alert("Dosya başarıyla yüklendi!");
+      } catch (error) {
+        console.error("Ödev yüklenirken hata oluştu:", error);
+        alert("Ödev yüklenemedi. Lütfen tekrar deneyin.");
+      }
     }
   };
 
-  if (!assignmentData) {
+  if (loading) {
     return <p>Yükleniyor...</p>;
+  }
+
+  if (error) {
+    return (
+      <div>
+        <Navbar />
+        <div className="flex flex-col items-center justify-center min-h-screen p-8">
+          <p className="text-red-500 text-lg font-bold">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!assignmentData) {
+    return (
+      <div>
+        <Navbar />
+        <div className="flex flex-col items-center justify-center min-h-screen p-8">
+          <p className="text-red-500 text-lg font-bold">Ödev bulunamadı.</p>
+        </div>
+      </div>
+    );
   }
 
   return (

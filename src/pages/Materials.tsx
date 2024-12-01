@@ -43,7 +43,7 @@ const Materials: React.FC = () => {
 
     const fetchMaterials = async () => {
       try {
-        const data = await get(`/courses/${courseId}/materials`);
+        const data = await get(`/CourseMaterials/${courseId}`);
         setMaterials(data);
       } catch (error) {
         console.error("Materyaller yüklenirken hata oluştu:", error);

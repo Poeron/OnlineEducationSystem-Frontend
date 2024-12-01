@@ -21,11 +21,13 @@ import InstructorAssignments from "@/pages/Forum";
 import InstructorForum from "@/pages/Forum";
 import InstructorQuiz from "@/pages/Forum";
 import AdminHome from "@/pages/admin/Home";
+import Welcome from "@/pages/Welcome";
 
 const AppRouter: React.FC = () => {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Welcome />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 

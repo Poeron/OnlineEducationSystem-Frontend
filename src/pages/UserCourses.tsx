@@ -2,11 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { Button } from "@/components/ui/button";
-// import { fetchUserCourses } from "@/services/apiHelpers";
+import { get } from "@/services/ApiHelper";
+import { jwtDecode } from "jwt-decode";
 
 interface Course {
-  id: number;
-  name: string;
+  course_id: number;
+  title: string;
+}
+
+interface DecodedToken {
+  user_id: string;
 }
 
 const Courses: React.FC = () => {
@@ -18,15 +23,15 @@ const Courses: React.FC = () => {
     // API'den kullanıcının kurslarını getir
     const getCourses = async () => {
       try {
-        // Backend olmadığı için mock data kullanılıyor
-        const mockCourses = [
-          { id: 1, name: "Türkçe" },
-          { id: 2, name: "Matematik" },
-          { id: 3, name: "İngilizce" },
-        ];
-        // const response = await fetchUserCourses();
-        // setCourses(response);
-        setCourses(mockCourses);
+        const token = localStorage.getItem("token");
+        if (token) {
+          const decodedToken: DecodedToken = jwtDecode(token);
+          const studentId = decodedToken.user_id;
+
+          // Kullanıcının kayıtlı olduğu kursları getirmek için API isteği
+          const userCoursesData = await get(`/Courses/student/${studentId}`);
+          setCourses(userCoursesData);
+        }
       } catch (error) {
         console.error("Kurslar yüklenirken hata oluştu:", error);
       } finally {
@@ -48,11 +53,11 @@ const Courses: React.FC = () => {
           <div className="grid grid-cols-2 gap-4">
             {courses.map((course) => (
               <Button
-                key={course.id}
+                key={course.course_id}
                 className="text-2xl p-12 bg-blue-500 text-white rounded"
-                onClick={() => navigate(`/courses/${course.id}`)}
+                onClick={() => navigate(`/student/courses/${course.course_id}`)}
               >
-                {course.name}
+                {course.title}
               </Button>
             ))}
           </div>
@@ -61,7 +66,10 @@ const Courses: React.FC = () => {
             <h1 className="text-4xl font-bold mb-4">
               Hiçbir kursa katılmadın, katılmak için tıkla
             </h1>
-            <Button className="p-4 bg-green-500 text-white rounded">
+            <Button
+              className="p-4 bg-green-500 text-white rounded"
+              onClick={() => navigate("/student/allcourses")}
+            >
               Kurslara Göz At
             </Button>
           </div>

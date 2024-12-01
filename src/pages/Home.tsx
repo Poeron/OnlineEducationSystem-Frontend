@@ -13,28 +13,28 @@ const Home: React.FC = () => {
         <Button
           color="blue"
           className="text-5xl p-44 bg-blue-500 text-white rounded"
-          onClick={() => navigate("/mycourses")}
+          onClick={() => navigate("/student/mycourses")}
         >
           Kurslarım
         </Button>
         <Button
           color="green"
           className="text-5xl p-44 bg-green-500 text-white rounded"
-          onClick={() => navigate("/allcourses")}
+          onClick={() => navigate("/student/allcourses")}
         >
           Tüm Kurslar
         </Button>
         <Button
           color="yellow"
           className="text-5xl p-44 bg-yellow-500 text-white rounded"
-          onClick={() => navigate("/assignments")}
+          onClick={() => navigate("/student/assignments")}
         >
           Ödevler
         </Button>
         <Button
           color="red"
           className="text-5xl p-44 bg-red-500 text-white rounded"
-          onClick={() => navigate("/certificates")}
+          onClick={() => navigate("/student/certificates")}
         >
           Sertifikalar
         </Button>

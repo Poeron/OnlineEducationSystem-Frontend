@@ -54,7 +54,7 @@ const QuizPage: React.FC = () => {
           <h1 className="text-3xl font-bold mb-8">Sınavınız Bitmiştir</h1>
           <Button
             className="p-4 bg-blue-500 text-white rounded"
-            onClick={() => navigate(`/courses/${courseId}`)}
+            onClick={() => navigate(`/student/courses/${courseId}`)}
           >
             Kursa Dön
           </Button>

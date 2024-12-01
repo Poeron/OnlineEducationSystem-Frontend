@@ -14,15 +14,26 @@ export const get = async (url: string) => {
   return response.json();
 };
 
-export const post = async (url: string, body?: unknown) => {
-  if (typeof body !== "object" || body === null) {
-    throw new Error("Body must be an object");
+export const post = async (
+  url: string,
+  body?: FormData | Record<string, unknown>
+) => {
+  const headers = getAuthHeaders();
+  let requestBody;
+
+  if (body instanceof FormData) {
+    requestBody = body;
+  } else if (typeof body === "object") {
+    requestBody = JSON.stringify(body);
+    headers["Content-Type"] = "application/json";
+  } else {
+    throw new Error("Body must be an object or FormData");
   }
 
   const response = await fetch(URL + url, {
     method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(body),
+    headers: headers,
+    body: requestBody,
   });
 
   if (!response.ok) {
@@ -31,14 +42,14 @@ export const post = async (url: string, body?: unknown) => {
 
   const text = await response.text();
   if (!text) {
-    return {}; 
+    return {};
   }
 
   return JSON.parse(text);
 };
 
 export const put = async (url: string, body?: Record<string, unknown>) => {
-  if (body && typeof body !== "object") {
+  if (body && typeof body !== "object" && body !== undefined) {
     throw new Error("Body must be an object");
   }
 
@@ -54,7 +65,7 @@ export const put = async (url: string, body?: Record<string, unknown>) => {
 
   const text = await response.text();
   if (!text) {
-    return {}; 
+    return {};
   }
 
   return JSON.parse(text);
