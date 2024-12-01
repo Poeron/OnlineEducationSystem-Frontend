@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
@@ -11,6 +11,8 @@ import {
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { post } from "../services/ApiHelper";
+import { useAuth } from "../hooks/useAuth";
+import { jwtDecode } from "jwt-decode";
 
 interface LoginFormValues {
   email: string;
@@ -20,6 +22,27 @@ interface LoginFormValues {
 const Login: React.FC = () => {
   const { register, handleSubmit } = useForm<LoginFormValues>();
   const navigate = useNavigate();
+  const { login, token } = useAuth();
+
+  useEffect(() => {
+    if (token) {
+      const decodedToken: any = jwtDecode(token);
+      switch (decodedToken.role) {
+        case "student":
+          navigate("/student/home");
+          break;
+        case "instructor":
+          navigate("/instructor/home");
+          break;
+        case "admin":
+          navigate("/admin/home");
+          break;
+        default:
+          navigate("/login");
+          break;
+      }
+    }
+  });
 
   const onSubmit = async (data: LoginFormValues) => {
     try {
@@ -29,7 +52,7 @@ const Login: React.FC = () => {
       // Eğer token varsa (başarılı login)
       if (response.token) {
         // Token'ı localStorage'a kaydet
-        localStorage.setItem("token", response.token);
+        login(response.token);
 
         // Kullanıcının rolüne göre yönlendirme yap
         switch (response.role) {

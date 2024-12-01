@@ -1,23 +1,33 @@
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { jwtDecode } from "jwt-decode";
 
 interface ProtectedRouteProps {
   children: JSX.Element;
-  role: "student" | "instructor";
+  role: "student" | "instructor" | "admin";
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, role }) => {
-  const { token, user } = useAuth();
+  const { token } = useAuth();
   const location = useLocation();
 
-  if (!token || !user) {
+  if (!token) {
+    console.log("No token found");
     return <Navigate to="/login" />;
   }
 
+  const user: any = jwtDecode(token);
+
   if (user.role !== role) {
-    const redirectPath =
-      user.role === "student" ? "/student/home" : "/instructor/home";
+    let redirectPath = "/";
+    if (role === "admin") {
+      redirectPath = "/admin";
+    } else if (role === "instructor") {
+      redirectPath = "/instructor";
+    } else if (role === "student") {
+      redirectPath = "/student";
+    }
     return <Navigate to={redirectPath} state={{ from: location }} />;
   }
 

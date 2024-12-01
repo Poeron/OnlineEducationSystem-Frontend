@@ -20,6 +20,7 @@ import InstructorMaterials from "@/pages/Forum";
 import InstructorAssignments from "@/pages/Forum";
 import InstructorForum from "@/pages/Forum";
 import InstructorQuiz from "@/pages/Forum";
+import AdminHome from "@/pages/admin/Home";
 
 const AppRouter: React.FC = () => {
   return (
@@ -86,6 +87,18 @@ const AppRouter: React.FC = () => {
                   path="courses/:courseId/forum"
                   element={<InstructorForum />}
                 />
+              </Routes>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Admin Route */}
+        <Route
+          path="/admin/*"
+          element={
+            <ProtectedRoute role="admin">
+              <Routes>
+                <Route path="home" element={<AdminHome />} />
               </Routes>
             </ProtectedRoute>
           }
