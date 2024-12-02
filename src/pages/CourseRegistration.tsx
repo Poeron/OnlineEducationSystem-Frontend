@@ -22,6 +22,7 @@ const CourseRegistration: React.FC = () => {
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isRegistered, setIsRegistered] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -29,6 +30,20 @@ const CourseRegistration: React.FC = () => {
         if (courseId) {
           const courseData: Course = await get(`/Courses/${courseId}`);
           setCourse(courseData);
+
+          const token = localStorage.getItem("token");
+          if (token) {
+            const decodedToken: DecodedToken = jwtDecode(token);
+            const studentId = decodedToken.user_id;
+            const enrollments = await get(`/Courses/student/${studentId}`);
+
+            // Kullanıcının bu kursa kayıtlı olup olmadığını kontrol et
+            const registered = enrollments.some(
+              (enrollment: { course_id: number }) =>
+                enrollment.course_id === parseInt(courseId)
+            );
+            setIsRegistered(registered);
+          }
         }
       } catch (err) {
         console.error("Kurs bilgileri yüklenirken hata oluştu:", err);
@@ -97,10 +112,13 @@ const CourseRegistration: React.FC = () => {
               Kurs Açıklaması: {course.description}
             </p>
             <Button
-              className="bg-blue-500 text-white p-4 rounded"
+              className={`bg-blue-500 text-white p-4 rounded ${
+                isRegistered ? "opacity-50 cursor-not-allowed" : ""
+              }`}
               onClick={handleRegister}
+              disabled={isRegistered}
             >
-              Kayıt Ol
+              {isRegistered ? "Kayıtlısınız" : "Kayıt Ol"}
             </Button>
           </div>
         ) : (

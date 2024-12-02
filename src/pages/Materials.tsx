@@ -15,11 +15,12 @@ import { get } from "@/services/ApiHelper"; // API Helper importu
 import { jwtDecode } from "jwt-decode";
 
 interface Material {
-  id: number;
-  name: string;
-  dateModified: string;
-  author: string;
-  link: string;
+  material_id: number;
+  course_id: number;
+  title: string;
+  content_type: string;
+  content_url: string;
+  updated_at: string;
 }
 
 interface DecodedToken {
@@ -43,7 +44,7 @@ const Materials: React.FC = () => {
 
     const fetchMaterials = async () => {
       try {
-        const data = await get(`/CourseMaterials/${courseId}`);
+        const data = await get(`/CourseMaterials/Course/${courseId}`);
         setMaterials(data);
       } catch (error) {
         console.error("Materyaller yüklenirken hata oluştu:", error);
@@ -73,26 +74,41 @@ const Materials: React.FC = () => {
             <TableRow>
               <TableHead>Ad</TableHead>
               <TableHead>Değiştirme Tarihi</TableHead>
-              <TableHead>Değiştiren</TableHead>
+              <TableHead>Dosya Türü</TableHead>
               <TableHead>İndir</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {materials.map((material) => (
-              <TableRow key={material.id}>
-                <TableCell className="font-medium">{material.name}</TableCell>
-                <TableCell>{material.dateModified}</TableCell>
-                <TableCell>{material.author}</TableCell>
-                <TableCell>
-                  <Button
-                    className="bg-blue-500 text-white p-2 rounded"
-                    onClick={() => window.open(material.link, "_blank")}
-                  >
-                    İndir
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {materials.map((material) => {
+              // updated_at tarihini formatla
+              const formattedDate = new Date(
+                material.updated_at
+              ).toLocaleDateString("tr-TR", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              });
+
+              return (
+                <TableRow key={material.material_id}>
+                  <TableCell className="font-medium">
+                    {material.title}
+                  </TableCell>
+                  <TableCell>{formattedDate}</TableCell>
+                  <TableCell>{material.content_type}</TableCell>
+                  <TableCell>
+                    <Button
+                      className="bg-blue-500 text-white p-2 rounded"
+                      onClick={() =>
+                        window.open(material.content_url, "_blank")
+                      }
+                    >
+                      İndir
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
         {userRole === "instructor" && (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { get } from "@/services/ApiHelper";
 import { jwtDecode } from "jwt-decode";
@@ -20,6 +20,7 @@ interface DecodedToken {
 }
 
 const AssignmentsPage: React.FC = () => {
+  const { courseId } = useParams<{ courseId?: string }>();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,11 +30,20 @@ const AssignmentsPage: React.FC = () => {
   useEffect(() => {
     const fetchAssignments = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (token) {
-          const decodedToken: DecodedToken = jwtDecode(token);
-          const studentId = decodedToken.user_id;
-          const data = await get(`/Assignments/student/${studentId}`);
+        let data;
+        if (courseId) {
+          data = await get(`/Assignments/Courses/${courseId}`);
+        } else {
+          // Genel ödevleri getir
+          const token = localStorage.getItem("token");
+          if (token) {
+            const decodedToken: DecodedToken = jwtDecode(token);
+            const studentId = decodedToken.user_id;
+            data = await get(`/Assignments/student/${studentId}`);
+          }
+        }
+
+        if (data) {
           setAssignments(data);
         }
       } catch (error) {
@@ -45,7 +55,7 @@ const AssignmentsPage: React.FC = () => {
     };
 
     fetchAssignments();
-  }, []);
+  }, [courseId]);
 
   if (loading) {
     return <p>Yükleniyor...</p>;
@@ -70,7 +80,9 @@ const AssignmentsPage: React.FC = () => {
     <div>
       <Navbar />
       <div className="flex flex-col items-center justify-center min-h-screen p-8">
-        <h1 className="text-3xl font-bold mb-8">Ödevler</h1>
+        <h1 className="text-3xl font-bold mb-8">
+          {courseId ? `Kurs Ödevleri` : `Tüm Ödevler`}
+        </h1>
         <AssignmentList
           assignments={assignments}
           onAssignmentClick={handleAssignmentClick}

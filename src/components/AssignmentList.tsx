@@ -23,7 +23,6 @@ const AssignmentList: React.FC<AssignmentListProps> = ({
   return (
     <div className="w-full max-w-4xl space-y-4">
       {assignments.map((assignment) => {
-        // due_date'i formatla
         const formattedDueDate = new Date(
           assignment.due_date
         ).toLocaleDateString("tr-TR", {
@@ -50,7 +49,7 @@ const AssignmentList: React.FC<AssignmentListProps> = ({
             <div className="mt-2 flex justify-end">
               <Button
                 className="bg-blue-500 text-white p-2 rounded"
-                onClick={() => onAssignmentClick(assignment.course_id)}
+                onClick={() => onAssignmentClick(assignment.assignment_id)}
               >
                 Ödev Detayları
               </Button>

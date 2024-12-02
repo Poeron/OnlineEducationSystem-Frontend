@@ -3,11 +3,15 @@ import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { Button } from "@/components/ui/button";
 import { get } from "@/services/ApiHelper";
+import { jwtDecode } from "jwt-decode";
 
 interface Course {
   course_id: number;
   title: string;
   description: string;
+}
+interface DecodedToken {
+  user_id: string;
 }
 
 const CourseDetails: React.FC = () => {
@@ -15,6 +19,8 @@ const CourseDetails: React.FC = () => {
   const navigate = useNavigate();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [hasExamResult, setHasExamResult] = useState<boolean>(false);
+  const [result, setResult] = useState<number>(0);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -30,6 +36,18 @@ const CourseDetails: React.FC = () => {
 
           if (selectedCourse) {
             setCourse(selectedCourse);
+          }
+
+          const token = localStorage.getItem("token");
+          const decodedToken: DecodedToken = jwtDecode(token!);
+          const studentId = parseInt(decodedToken.user_id);
+          // Sınav sonucu kontrolü
+          const examResults = await get(
+            `/ExamResults/course/${courseId}/student/${studentId}`
+          );
+          if (examResults) {
+            setHasExamResult(true);
+            setResult(examResults.score);
           }
         }
       } catch (error) {
@@ -70,10 +88,19 @@ const CourseDetails: React.FC = () => {
             Ödevler
           </Button>
           <Button
-            className="text-2xl p-8 bg-yellow-500 text-white rounded"
-            onClick={() => navigate(`/student/courses/${courseId}/quiz`)}
+            className={`text-2xl p-8 ${
+              hasExamResult ? "bg-purple-500" : "bg-yellow-500"
+            } text-white rounded`}
+            onClick={() =>
+              navigate(
+                hasExamResult
+                  ? `/student/courses/${courseId}/exam-result`
+                  : `/student/courses/${courseId}/quiz`
+              )
+            }
+            disabled={hasExamResult}
           >
-            Sınavlar
+            {hasExamResult ? `Sinav sonucunuz : ${result}` : "Sınavlar"}
           </Button>
           <Button
             className="text-2xl p-8 bg-red-500 text-white rounded"

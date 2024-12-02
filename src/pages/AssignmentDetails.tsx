@@ -6,12 +6,12 @@ import { get, post } from "@/services/ApiHelper";
 
 interface AssignmentData {
   title: string;
-  deadline: string;
-  instructions: string;
+  description: string;
+  due_date: string;
 }
 
 const AssignmentPage: React.FC = () => {
-  const { courseId } = useParams<{ courseId: string }>();
+  const { assignmentId } = useParams<{ assignmentId: string }>();
   const [file, setFile] = useState<File | null>(null);
   const [assignmentData, setAssignmentData] = useState<AssignmentData | null>(
     null
@@ -23,7 +23,7 @@ const AssignmentPage: React.FC = () => {
     const fetchAssignment = async () => {
       try {
         // Ödev verilerini almak için API isteği
-        const data = await get(`/Assignments/${courseId}`);
+        const data = await get(`/Assignments/${assignmentId}`);
         if (data) {
           setAssignmentData(data);
         } else {
@@ -38,7 +38,7 @@ const AssignmentPage: React.FC = () => {
     };
 
     fetchAssignment();
-  }, [courseId]);
+  }, [assignmentId]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -53,7 +53,7 @@ const AssignmentPage: React.FC = () => {
         formData.append("file", file);
 
         // Ödevi yüklemek için API isteği
-        await post(`/Assignments/${courseId}`, formData);
+        await post(`/Assignments/${assignmentId}`, formData);
 
         alert("Dosya başarıyla yüklendi!");
       } catch (error) {
@@ -89,15 +89,25 @@ const AssignmentPage: React.FC = () => {
     );
   }
 
+  // due_date'i formatla
+  const formattedDueDate = new Date(assignmentData.due_date).toLocaleDateString(
+    "tr-TR",
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
+  );
+
   return (
     <div>
       <Navbar />
       <div className="flex flex-col items-center justify-center min-h-screen p-8">
         <h1 className="text-3xl font-bold mb-4">{assignmentData.title}</h1>
-        <p className="text-lg mb-8">Son tarih: {assignmentData.deadline}</p>
+        <p className="text-lg mb-8">Son tarih: {formattedDueDate}</p>
         <div className="bg-gray-800 text-white p-6 rounded-lg shadow-md w-full max-w-4xl">
           <h2 className="text-2xl font-semibold mb-4">Yönergeler</h2>
-          <p className="mb-8">{assignmentData.instructions}</p>
+          <p className="mb-8">{assignmentData.description}</p>
           <div className="flex flex-col gap-4">
             <label className="flex items-center gap-2">
               <span className="text-lg">Çalışmam:</span>

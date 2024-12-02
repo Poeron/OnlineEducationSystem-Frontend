@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import { Button } from "@/components/ui/button";
 import { get, post } from "@/services/ApiHelper";
@@ -6,9 +6,10 @@ import { jwtDecode } from "jwt-decode";
 import { useParams } from "react-router-dom";
 
 interface Message {
-  id: number;
-  username: string;
-  content: string;
+  comment_id: string;
+  comment_text: string;
+  created_at: string;
+  author_name: string;
 }
 
 interface Course {
@@ -17,7 +18,7 @@ interface Course {
 }
 
 interface DecodedToken {
-  user_id: number;
+  user_id: string;
   username: string;
 }
 
@@ -26,6 +27,16 @@ const Forum: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
   const [course, setCourse] = useState<Course | null>(null);
+
+  const fetchMessages = useCallback(async () => {
+    try {
+      // Forum mesajlarını almak için API isteği
+      const data = await get(`/ForumComments/course/${courseId}`);
+      setMessages(data);
+    } catch (error) {
+      console.error("Mesajlar yüklenirken hata oluştu:", error);
+    }
+  }, [courseId]);
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
@@ -38,43 +49,27 @@ const Forum: React.FC = () => {
       }
     };
 
-    const fetchMessages = async () => {
-      try {
-        // Forum mesajlarını almak için API isteği
-        const data = await get(`/ForumThreads/course/${courseId}`);
-        setMessages(data);
-      } catch (error) {
-        console.error("Mesajlar yüklenirken hata oluştu:", error);
-      }
-    };
-
     fetchCourseDetails();
     fetchMessages();
-  }, [courseId]);
+  }, [courseId, fetchMessages]);
 
   const handleSendMessage = async () => {
     if (newMessage.trim() && courseId) {
       try {
-        // Kullanıcının token'ını almak ve çözmek
         const token = localStorage.getItem("token");
         if (token) {
           const decodedToken: DecodedToken = jwtDecode(token);
           const newMsg = {
             course_id: parseInt(courseId, 10),
-            author_id: decodedToken.user_id,
-            title: newMessage,
+            author_id: parseInt(decodedToken.user_id),
+            comment_text: newMessage,
           };
 
           // Yeni mesaj göndermek için API isteği
-          const response = await post("/ForumThreads", newMsg);
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            {
-              id: response.id,
-              username: decodedToken.username,
-              content: newMessage,
-            },
-          ]);
+          await post("/ForumComments", newMsg);
+
+          // Mesaj gönderildikten sonra mesajları yeniden yükle
+          fetchMessages();
           setNewMessage("");
         }
       } catch (error) {
@@ -92,13 +87,10 @@ const Forum: React.FC = () => {
           {course ? `${course.title} FORUMU` : "Forum"}
         </h1>
         <div className="w-full max-w-4xl space-y-4 mb-8">
-          {messages.map((message, index) => (
-            <div
-              key={`${message.username}-${index}`}
-              className="border p-4 rounded"
-            >
-              <h2 className="font-bold mb-2">{message.username}</h2>
-              <p>{message.content}</p>
+          {messages.map((message) => (
+            <div key={message.comment_id} className="border p-4 rounded">
+              <h2 className="font-bold mb-2">{message.author_name}</h2>
+              <p>{message.comment_text}</p>
             </div>
           ))}
         </div>

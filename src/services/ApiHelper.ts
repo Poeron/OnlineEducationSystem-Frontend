@@ -14,7 +14,7 @@ export const get = async (url: string) => {
   return response.json();
 };
 
-export const post = async (url: string, body?: any) => {
+export const post = async (url: string, body?: object | null) => {
   const response = await fetch(URL + url, {
     method: "POST",
     headers: getAuthHeaders(),
@@ -27,7 +27,7 @@ export const post = async (url: string, body?: any) => {
   return response.json();
 };
 
-export const put = async (url: string, body?: any) => {
+export const put = async (url: string, body?: object | null) => {
   const response = await fetch(URL + url, {
     method: "PUT",
     headers: getAuthHeaders(),
