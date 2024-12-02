@@ -1,7 +1,9 @@
 import "../../assets/css/AdminHomepage.css";
 import Navbar from "../../components/Navbar";
+import { useAuth } from "../../hooks/useAuth";
 
 const AdminHomepage = () => {
+  const { logout } = useAuth();
   return (
     <div className="admin-homepage">
       {/* Sidebar */}
@@ -27,13 +29,16 @@ const AdminHomepage = () => {
             <li>
               <a href="/certificates">Certificates</a>
             </li>
+
+            <button onClick={logout} className="px-4 py-2 bg-red-600 rounded">
+              Çıkış Yap
+            </button>
             {/* Add links for other controllers */}
           </ul>
         </nav>
       </aside>
 
       {/* Main Content */}
-      <Navbar />
       <main className="main-content">
         <header>
           <h1>Dashboard</h1>
