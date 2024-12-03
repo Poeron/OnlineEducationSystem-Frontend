@@ -20,6 +20,7 @@ import AdminHome from "@/pages/admin/Home";
 import Welcome from "@/pages/Welcome";
 import CourseStudents from "@/pages/CourseStudents";
 import Users from "@/pages/admin/Users";
+import NotFound from "@/pages/NotFound";
 import AdminLayout from "@/layouts/AdminLayout";
 
 const AppRouter: React.FC = () => {
@@ -29,6 +30,7 @@ const AppRouter: React.FC = () => {
         <Route path="/" element={<Welcome />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="*" element={<NotFound />} />
 
         {/* Student Routes */}
         <Route
@@ -107,12 +109,12 @@ const AppRouter: React.FC = () => {
           path="/admin/*"
           element={
             <ProtectedRoute role="admin">
-              <AdminLayout>
-                <Routes>
-                  <Route path="home" element={<AdminHome />} />
-                  <Route path="users" element={<Users />} />
-                </Routes>
-              </AdminLayout>
+                <AdminLayout>
+                  <Routes>
+                    <Route path="home" element={<AdminHome />} />
+                    <Route path="users" element={<Users />} />
+                  </Routes>
+                </AdminLayout>
             </ProtectedRoute>
           }
         />
