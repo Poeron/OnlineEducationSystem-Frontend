@@ -1,44 +1,63 @@
-/* Layout Styles */
-.admin-homepage {
-  display: flex;
-  height: 100vh;
-  font-family: Arial, sans-serif;
-}
+/* AdminHomepage.css */
 
+/* Sidebar Styles */
 .sidebar {
   width: 250px;
+  height: 100vh;
   background-color: #333;
   color: white;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
 }
 
 .sidebar h2 {
   margin-bottom: 20px;
 }
 
-.sidebar ul {
+.sidebar nav ul {
   list-style: none;
   padding: 0;
+  flex-grow: 1; /* Ensure ul takes available space */
 }
 
-.sidebar ul li {
+.sidebar nav ul li {
   margin: 10px 0;
 }
 
-.sidebar ul li a {
+.sidebar nav ul li a {
   color: white;
   text-decoration: none;
   font-weight: bold;
+  cursor: pointer;
 }
 
-.sidebar ul li a:hover {
+.sidebar nav ul li a:hover {
   text-decoration: underline;
 }
 
+.sidebar button {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #e53e3e;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.sidebar button:hover {
+  background-color: #c53030;
+}
+
+/* Main Content Styles */
 .main-content {
-  flex: 1;
+  margin-left: 250px;
   padding: 20px;
   background-color: #f4f4f4;
+  min-height: 100vh;
 }
 
 header h1 {

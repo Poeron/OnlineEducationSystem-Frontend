@@ -19,6 +19,8 @@ import InstructorQuiz from "@/pages/Forum";
 import AdminHome from "@/pages/admin/Home";
 import Welcome from "@/pages/Welcome";
 import CourseStudents from "@/pages/CourseStudents";
+import Users from "@/pages/admin/Users";
+import AdminLayout from "@/layouts/AdminLayout";
 
 const AppRouter: React.FC = () => {
   return (
@@ -105,9 +107,12 @@ const AppRouter: React.FC = () => {
           path="/admin/*"
           element={
             <ProtectedRoute role="admin">
-              <Routes>
-                <Route path="home" element={<AdminHome />} />
-              </Routes>
+              <AdminLayout>
+                <Routes>
+                  <Route path="home" element={<AdminHome />} />
+                  <Route path="users" element={<Users />} />
+                </Routes>
+              </AdminLayout>
             </ProtectedRoute>
           }
         />

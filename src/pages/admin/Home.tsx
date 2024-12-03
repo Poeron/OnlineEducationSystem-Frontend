@@ -1,43 +1,8 @@
-import "../../assets/css/AdminHomepage.css";
-import Navbar from "../../components/Navbar";
-import { useAuth } from "../../hooks/useAuth";
+import "@/assets/css/AdminHomepage.css";
 
 const AdminHomepage = () => {
-  const { logout } = useAuth();
   return (
     <div className="admin-homepage">
-      {/* Sidebar */}
-      <aside className="sidebar">
-        <h2>Admin Panel</h2>
-        <nav>
-          <ul>
-            <li>
-              <a href="/users">Users</a>
-            </li>
-            <li>
-              <a href="/courses">Courses</a>
-            </li>
-            <li>
-              <a href="/exams">Exams</a>
-            </li>
-            <li>
-              <a href="/assignments">Assignments</a>
-            </li>
-            <li>
-              <a href="/forum-threads">Forum Threads</a>
-            </li>
-            <li>
-              <a href="/certificates">Certificates</a>
-            </li>
-
-            <button onClick={logout} className="px-4 py-2 bg-red-600 rounded">
-              Çıkış Yap
-            </button>
-            {/* Add links for other controllers */}
-          </ul>
-        </nav>
-      </aside>
-
       {/* Main Content */}
       <main className="main-content">
         <header>
