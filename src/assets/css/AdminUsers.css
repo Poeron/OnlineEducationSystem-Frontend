@@ -2,22 +2,6 @@
   padding: 20px;
 }
 
-.admin-users header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.create-user-btn {
-  padding: 10px 20px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
 .create-user-btn:hover {
   background-color: #45a049;
 }
