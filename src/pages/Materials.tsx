@@ -11,8 +11,19 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { get } from "@/services/ApiHelper"; // API Helper importu
+import { get, post } from "@/services/ApiHelper"; // API Helper importu
 import { jwtDecode } from "jwt-decode";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
 
 interface Material {
   material_id: number;
@@ -33,9 +44,16 @@ const Materials: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [userRole, setUserRole] = useState<string>("");
 
+  // Yeni materyal bilgileri
+  const [newMaterialTitle, setNewMaterialTitle] = useState<string>("");
+  const [newMaterialContentType, setNewMaterialContentType] =
+    useState<string>("");
+  const [newMaterialContentUrl, setNewMaterialContentUrl] =
+    useState<string>("");
+
   useEffect(() => {
     const fetchUserRole = () => {
-      const token = localStorage.getItem("authToken");
+      const token = localStorage.getItem("token");
       if (token) {
         const decodedToken: DecodedToken = jwtDecode(token);
         setUserRole(decodedToken.role);
@@ -56,6 +74,24 @@ const Materials: React.FC = () => {
     fetchUserRole();
     fetchMaterials();
   }, [courseId]);
+
+  const handleAddMaterial = async () => {
+    try {
+      const newMaterial = {
+        course_id: courseId,
+        title: newMaterialTitle,
+        content_type: newMaterialContentType,
+        content_url: newMaterialContentUrl,
+      };
+
+      await post("/CourseMaterials", newMaterial);
+      alert("Yeni materyal başarıyla eklendi!");
+      window.location.reload(); // Materyallerin yeniden yüklenmesi için sayfayı yenile
+    } catch (error) {
+      console.error("Materyal eklenirken hata oluştu:", error);
+      alert("Materyal eklenemedi. Lütfen tekrar deneyin.");
+    }
+  };
 
   if (loading) {
     return <p>Yükleniyor...</p>;
@@ -112,9 +148,51 @@ const Materials: React.FC = () => {
           </TableBody>
         </Table>
         {userRole === "instructor" && (
-          <Button className="mt-8 bg-green-500 text-white p-4 rounded">
-            Yeni Materyal Ekle
-          </Button>
+          <div className="mt-8">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button className="bg-green-500 text-white p-4 rounded">
+                  Yeni Materyal Ekle
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Yeni Materyal Ekle</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Lütfen yeni materyal için gerekli bilgileri girin.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <div className="flex flex-col gap-4">
+                  <Input
+                    placeholder="Materyal Başlığı"
+                    value={newMaterialTitle}
+                    onChange={(e) => setNewMaterialTitle(e.target.value)}
+                  />
+                  <Input
+                    placeholder="Dosya Türü (örn: PDF, Video)"
+                    value={newMaterialContentType}
+                    onChange={(e) => setNewMaterialContentType(e.target.value)}
+                  />
+                  <Input
+                    placeholder="İçerik URL"
+                    value={newMaterialContentUrl}
+                    onChange={(e) => setNewMaterialContentUrl(e.target.value)}
+                  />
+                </div>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="bg-gray-300 text-black">
+                    İptal
+                  </AlertDialogCancel>
+                  <Button
+                    onClick={handleAddMaterial}
+                    className="bg-blue-500 text-white"
+                  >
+                    Materyal Ekle
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         )}
       </div>
     </div>

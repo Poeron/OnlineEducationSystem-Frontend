@@ -12,16 +12,13 @@ import Forum from "@/pages/Forum";
 import Quiz from "@/pages/Quiz";
 import AllCourses from "@/pages/AllCourses";
 import CourseRegistration from "@/pages/CourseRegistration";
-import AllAssignments from "@/pages/Assignments";
-import InstructorHome from "@/pages/Forum";
+import Assignments from "@/pages/Assignments";
 import InstructorCourses from "@/pages/Forum";
-import InstructorCourseDetails from "@/pages/Forum";
-import InstructorMaterials from "@/pages/Forum";
-import InstructorAssignments from "@/pages/Forum";
 import InstructorForum from "@/pages/Forum";
 import InstructorQuiz from "@/pages/Forum";
 import AdminHome from "@/pages/admin/Home";
 import Welcome from "@/pages/Welcome";
+import CourseStudents from "@/pages/CourseStudents";
 
 const AppRouter: React.FC = () => {
   return (
@@ -39,7 +36,7 @@ const AppRouter: React.FC = () => {
               <Routes>
                 <Route path="home" element={<Home />} />
                 <Route path="mycourses" element={<MyCourses />} />
-                <Route path="assignments" element={<AllAssignments />} />
+                <Route path="assignments" element={<Assignments />} />
                 <Route
                   path="assignments/:assignmentId"
                   element={<AssignmentDetails />}
@@ -51,7 +48,7 @@ const AppRouter: React.FC = () => {
                 />
                 <Route
                   path="courses/:courseId/assignments"
-                  element={<AllAssignments />}
+                  element={<Assignments />}
                 />
                 <Route path="courses/:courseId/quiz" element={<Quiz />} />
                 <Route path="courses/:courseId/forum" element={<Forum />} />
@@ -71,27 +68,32 @@ const AppRouter: React.FC = () => {
           element={
             <ProtectedRoute role="instructor">
               <Routes>
-                <Route path="home" element={<InstructorHome />} />
+                <Route path="home" element={<MyCourses />} />
                 <Route path="courses" element={<InstructorCourses />} />
-                <Route
-                  path="courses/:courseId"
-                  element={<InstructorCourseDetails />}
-                />
+                <Route path="courses/:courseId" element={<CourseDetails />} />
                 <Route
                   path="courses/:courseId/materials"
-                  element={<InstructorMaterials />}
+                  element={<Materials />}
                 />
                 <Route
                   path="courses/:courseId/assignments"
-                  element={<InstructorAssignments />}
+                  element={<Assignments />}
                 />
                 <Route
                   path="courses/:courseId/quiz"
                   element={<InstructorQuiz />}
                 />
                 <Route
+                  path="courses/:courseId/students"
+                  element={<CourseStudents />}
+                />
+                <Route
                   path="courses/:courseId/forum"
                   element={<InstructorForum />}
+                />
+                <Route
+                  path="assignments/:assignmentId"
+                  element={<AssignmentDetails />}
                 />
               </Routes>
             </ProtectedRoute>

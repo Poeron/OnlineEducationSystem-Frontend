@@ -27,9 +27,9 @@ export const post = async (url: string, body?: object | null) => {
   return response.json();
 };
 
-export const put = async (url: string, body?: object | null) => {
+export const patch = async (url: string, body?: object | null) => {
   const response = await fetch(URL + url, {
-    method: "PUT",
+    method: "PATCH",
     headers: getAuthHeaders(),
     body: body ? JSON.stringify(body) : undefined,
   });

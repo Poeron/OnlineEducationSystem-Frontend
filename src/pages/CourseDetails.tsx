@@ -12,6 +12,7 @@ interface Course {
 }
 interface DecodedToken {
   user_id: string;
+  role: string;
 }
 
 const CourseDetails: React.FC = () => {
@@ -21,6 +22,7 @@ const CourseDetails: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [hasExamResult, setHasExamResult] = useState<boolean>(false);
   const [result, setResult] = useState<number>(0);
+  const [userRole, setUserRole] = useState<string>("");
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -41,6 +43,7 @@ const CourseDetails: React.FC = () => {
           const token = localStorage.getItem("token");
           const decodedToken: DecodedToken = jwtDecode(token!);
           const studentId = parseInt(decodedToken.user_id);
+          setUserRole(decodedToken.role);
           // Sınav sonucu kontrolü
           const examResults = await get(
             `/ExamResults/course/${courseId}/student/${studentId}`
@@ -77,13 +80,17 @@ const CourseDetails: React.FC = () => {
         <div className="grid grid-cols-1 gap-4">
           <Button
             className="text-2xl p-8 bg-blue-500 text-white rounded"
-            onClick={() => navigate(`/student/courses/${courseId}/materials`)}
+            onClick={() =>
+              navigate(`/${userRole}/courses/${courseId}/materials`)
+            }
           >
             Materyal
           </Button>
           <Button
             className="text-2xl p-8 bg-green-500 text-white rounded"
-            onClick={() => navigate(`/student/courses/${courseId}/assignments`)}
+            onClick={() =>
+              navigate(`/${userRole}/courses/${courseId}/assignments`)
+            }
           >
             Ödevler
           </Button>
@@ -94,8 +101,8 @@ const CourseDetails: React.FC = () => {
             onClick={() =>
               navigate(
                 hasExamResult
-                  ? `/student/courses/${courseId}/exam-result`
-                  : `/student/courses/${courseId}/quiz`
+                  ? `/${userRole}/courses/${courseId}/exam-result`
+                  : `/${userRole}/courses/${courseId}/quiz`
               )
             }
             disabled={hasExamResult}
@@ -104,10 +111,20 @@ const CourseDetails: React.FC = () => {
           </Button>
           <Button
             className="text-2xl p-8 bg-red-500 text-white rounded"
-            onClick={() => navigate(`/student/courses/${courseId}/forum`)}
+            onClick={() => navigate(`/${userRole}/courses/${courseId}/forum`)}
           >
             Forum
           </Button>
+          {userRole === "instructor" && (
+            <Button
+              className="text-2xl p-8 bg-teal-500 text-white rounded"
+              onClick={() =>
+                navigate(`/${userRole}/courses/${courseId}/students`)
+              }
+            >
+              Öğrenciler
+            </Button>
+          )}
         </div>
       </div>
     </div>

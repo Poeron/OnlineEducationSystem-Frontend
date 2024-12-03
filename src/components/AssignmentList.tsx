@@ -47,21 +47,23 @@ const AssignmentList: React.FC<AssignmentListProps> = ({
               <p className="text-sm">{formattedDueDate}</p>
             </div>
             <div className="mt-2 flex justify-end">
-              <Button
-                className="bg-blue-500 text-white p-2 rounded"
-                onClick={() => onAssignmentClick(assignment.assignment_id)}
-              >
-                Ödev Detayları
-              </Button>
-              {assignment.submitted ? (
+                {!assignment.submitted && (
+                <Button
+                  className="bg-blue-500 text-white p-2 rounded"
+                  onClick={() => onAssignmentClick(assignment.assignment_id)}
+                >
+                  Ödev Detayları
+                </Button>
+                )}
+                {assignment.submitted ? (
                 <span className="ml-4 text-green-500 font-semibold">
                   ✔ Teslim edildi
                 </span>
-              ) : (
+                ) : (
                 <span className="ml-4 text-gray-500 font-semibold">
                   ✖ Teslim edilmedi
                 </span>
-              )}
+                )}
             </div>
           </div>
         );
