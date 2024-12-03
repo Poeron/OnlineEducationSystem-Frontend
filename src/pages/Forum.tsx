@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import { Button } from "@/components/ui/button";
-import { get, post } from "@/services/ApiHelper";
+import { get, post, remove } from "@/services/ApiHelper"; // Added `del` for delete request
 import { jwtDecode } from "jwt-decode";
 import { useParams } from "react-router-dom";
+import { FaTrashAlt } from "react-icons/fa"; 
 
 interface Message {
   comment_id: string;
@@ -20,6 +21,7 @@ interface Course {
 interface DecodedToken {
   user_id: string;
   username: string;
+  role: string; // Added role
 }
 
 const Forum: React.FC = () => {
@@ -27,10 +29,10 @@ const Forum: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
   const [course, setCourse] = useState<Course | null>(null);
+  const [userRole, setUserRole] = useState<string>("");
 
   const fetchMessages = useCallback(async () => {
     try {
-      // Forum mesajlarını almak için API isteği
       const data = await get(`/ForumComments/course/${courseId}`);
       setMessages(data);
     } catch (error) {
@@ -41,7 +43,6 @@ const Forum: React.FC = () => {
   useEffect(() => {
     const fetchCourseDetails = async () => {
       try {
-        // Kurs detaylarını almak için API isteği
         const courseData = await get(`/Courses/${courseId}`);
         setCourse(courseData);
       } catch (error) {
@@ -49,7 +50,16 @@ const Forum: React.FC = () => {
       }
     };
 
+    const fetchUserRole = () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken: DecodedToken = jwtDecode(token);
+        setUserRole(decodedToken.role); // Set the user role from token
+      }
+    };
+
     fetchCourseDetails();
+    fetchUserRole();
     fetchMessages();
   }, [courseId, fetchMessages]);
 
@@ -65,17 +75,25 @@ const Forum: React.FC = () => {
             comment_text: newMessage,
           };
 
-          // Yeni mesaj göndermek için API isteği
           await post("/ForumComments", newMsg);
-
-          // Mesaj gönderildikten sonra mesajları yeniden yükle
-          fetchMessages();
+          fetchMessages(); // Refresh messages
           setNewMessage("");
         }
       } catch (error) {
         console.error("Mesaj gönderilirken hata oluştu:", error);
         alert("Mesaj gönderilemedi. Lütfen tekrar deneyin.");
       }
+    }
+  };
+
+  const handleDeleteMessage = async (commentId: string) => {
+    try {
+      await remove(`/ForumComments/${commentId}`); 
+      fetchMessages();
+      alert("Mesaj başarıyla silindi.");
+    } catch (error) {
+      console.error("Mesaj silinirken hata oluştu:", error);
+      alert("Mesaj silinemedi. Lütfen tekrar deneyin.");
     }
   };
 
@@ -88,9 +106,22 @@ const Forum: React.FC = () => {
         </h1>
         <div className="w-full max-w-4xl space-y-4 mb-8">
           {messages.map((message) => (
-            <div key={message.comment_id} className="border p-4 rounded">
-              <h2 className="font-bold mb-2">{message.author_name}</h2>
-              <p>{message.comment_text}</p>
+            <div
+              key={message.comment_id}
+              className="border p-4 rounded flex justify-between items-center"
+            >
+              <div>
+                <h2 className="font-bold mb-2">{message.author_name}</h2>
+                <p>{message.comment_text}</p>
+              </div>
+              {userRole === "instructor" && ( // Check if user is an instructor
+                <button
+                  className="text-red-500 hover:text-red-700 p-2 rounded focus:outline-none"
+                  onClick={() => handleDeleteMessage(message.comment_id)}
+                >
+                  <FaTrashAlt className="w-6 h-6" /> {/* Trash icon */}
+                </button>
+              )}
             </div>
           ))}
         </div>
