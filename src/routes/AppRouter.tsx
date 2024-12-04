@@ -32,13 +32,12 @@ import ProtectedRoute from "../routes/ProtectedRoute";
 import Quiz from "@/pages/Quiz";
 import React from "react";
 import Signup from "@/pages/Signup";
-import Welcome from "@/pages/Welcome";
 
 const AppRouter: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Welcome />} />
+        <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="*" element={<NotFound />} />

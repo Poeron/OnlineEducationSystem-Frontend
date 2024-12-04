@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import { Button } from "@/components/ui/button";
-import { get, post } from "@/services/ApiHelper";
-import { jwtDecode } from "jwt-decode";
 import {
   AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogFooter,
-  AlertDialogTitle,
-  AlertDialogDescription,
   AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import React, { useEffect, useState } from "react";
+import { get, post } from "@/services/ApiHelper";
+
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Navbar from "../components/Navbar";
 import { Textarea } from "@/components/ui/textarea";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 interface Course {
   course_id: number;
@@ -172,7 +173,7 @@ const Courses: React.FC = () => {
             </Button>
           </div>
         ) : (
-          <p className="text-gray-800 text-xl">Henüz kurs eklenmedi.</p>
+          <p className="text-white text-xl">Henüz kurs eklenmedi.</p>
         )}
       </div>
     </div>
