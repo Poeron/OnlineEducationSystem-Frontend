@@ -1,12 +1,9 @@
-import "@/assets/css/AdminCourses.css";
-
 import React, { useEffect, useState } from "react";
-import { get, patch, remove } from "@/services/ApiHelper";
+import { get, patch, post, remove } from "@/services/ApiHelper";
 
-import CourseCreateModal from "@/components/CourseCreateModal";
-import CourseEditModal from "@/components/CourseEditModal";
-import CoursesTable from "@/components/CoursesTable";
-import Header from "@/components/AdminHeader";
+import AdminHeader from "@/components/AdminHeader";
+import DataTable from "@/components/DataTable";
+import FormModal from "@/components/FormModal";
 
 type Course = {
   course_id: number;
@@ -15,69 +12,16 @@ type Course = {
   instructor_id: number;
 };
 
-const Courses: React.FC = () => {
+const AdminCourses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortKey, setSortKey] = useState<keyof Course | "">("");
-
-  const handleCreateCourse = () => {
-    setIsCreateModalOpen(true);
-  };
-  const closeCreateModal = () => {
-    setIsCreateModalOpen(false);
-  };
-  const handleCourseCreate = async () => {
-    closeCreateModal();
-    await fetchCourses();
-  };
-  const handleEdit = (course: Course) => {
-    setSelectedCourse(course);
-    setIsModalOpen(true);
-  };
-
-  const handleDelete = (courseId: number) => {
-    const deleteCourse = async () => {
-      try {
-        await remove(`/Courses/${courseId}`);
-        const updatedCourses = courses.filter(
-          (course) => course.course_id !== courseId
-        );
-        setCourses(updatedCourses);
-      } catch (error) {
-        console.error("Error deleting course: ", error);
-      }
-    };
-    deleteCourse();
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedCourse(null);
-  };
-
-  const handleCourseUpdate = (updatedCourse: Course) => {
-    const updateCourse = async () => {
-      try {
-        await patch(`/Courses`, updatedCourse);
-        const updatedCourses = courses.map((course) =>
-          course.course_id === updatedCourse.course_id ? updatedCourse : course
-        );
-        setCourses(updatedCourses);
-        closeModal();
-      } catch (error) {
-        console.error("Error updating course: ", error);
-      }
-    };
-    updateCourse();
-  };
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
   const fetchCourses = async () => {
     try {
-      const courses = await get("/Courses");
-      setCourses(courses);
+      const data = await get("/Courses");
+      setCourses(data);
     } catch (error) {
       console.error("Error fetching courses: ", error);
     }
@@ -87,54 +31,90 @@ const Courses: React.FC = () => {
     fetchCourses();
   }, []);
 
-  const filteredCourses = courses.filter(
-    (course) =>
-      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      course.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleCreateCourse = async (newCourse: Omit<Course, "id">) => {
+    try {
+      await post("/Courses", newCourse);
+      await fetchCourses();
+      setIsCreateModalOpen(false);
+    } catch (error) {
+      console.error("Error creating course: ", error);
+    }
+  };
 
-  const sortedCourses = sortKey
-    ? [...filteredCourses].sort((a, b) => (a[sortKey] > b[sortKey] ? 1 : -1))
-    : filteredCourses;
+  const handleUpdateCourse = async (updatedCourse: Course) => {
+    try {
+      await patch(`/Courses`, updatedCourse);
+      await fetchCourses();
+      setIsEditModalOpen(false);
+    } catch (error) {
+      console.error("Error updating course: ", error);
+    }
+  };
+
+  const handleDeleteCourse = async (courseId: number) => {
+    try {
+      await remove(`/Courses/${courseId}`);
+      await fetchCourses();
+    } catch (error) {
+      console.error("Error deleting course: ", error);
+    }
+  };
 
   return (
     <div className="admin-courses">
-      <Header title="Courses Management" onCreate={handleCreateCourse} />
-      <div className="search-and-sort">
-        <input
-          type="text"
-          placeholder="Search courses..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <select onChange={(e) => setSortKey(e.target.value as keyof Course)}>
-          <option value="">Sort by...</option>
-          <option value="course_id">ID</option>
-          <option value="title">Title</option>
-          <option value="instructor_id">Instructor ID</option>
-        </select>
-      </div>
-      <CoursesTable
-        courses={sortedCourses}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
+      <AdminHeader
+        title="Courses Management"
+        onCreate={() => setIsCreateModalOpen(true)}
       />
-
-      {isModalOpen && selectedCourse && (
-        <CourseEditModal
-          course={selectedCourse}
-          onClose={closeModal}
-          onUpdate={handleCourseUpdate}
+      <DataTable
+        data={courses}
+        columns={[
+          { header: "ID", key: "course_id" },
+          { header: "Title", key: "title" },
+          { header: "Description", key: "description" },
+          { header: "Instructor ID", key: "instructor_id" },
+        ]}
+        idKey="course_id"
+        onEdit={(course) => {
+          setSelectedCourse(course);
+          setIsEditModalOpen(true);
+        }}
+        onDelete={handleDeleteCourse}
+      />
+      {isCreateModalOpen && (
+        <FormModal
+          title="Create Course"
+          fields={[
+            { label: "Title", key: "title", type: "text" },
+            { label: "Description", key: "description", type: "text" },
+            { label: "Instructor ID", key: "instructor_id", type: "number" },
+          ]}
+          initialValues={{
+            title: "",
+            description: "",
+            instructor_id: 0,
+          }}
+          onClose={() => setIsCreateModalOpen(false)}
+          onSubmit={(values) =>
+            handleCreateCourse(values as Omit<Course, "id">)
+          }
         />
       )}
-      {isCreateModalOpen && (
-        <CourseCreateModal
-          onClose={closeCreateModal}
-          onCreate={handleCourseCreate}
+      {isEditModalOpen && selectedCourse && (
+        <FormModal
+          title="Edit Course"
+          fields={[
+            { label: "Title", key: "title", type: "text" },
+            { label: "Description", key: "description", type: "text" },
+            { label: "Instructor ID", key: "instructor_id", type: "number" },
+          ]}
+          initialValues={selectedCourse}
+          onClose={() => setIsEditModalOpen(false)}
+          onSubmit={(values) => handleUpdateCourse(values as Course)}
         />
       )}
     </div>
   );
 };
 
-export default Courses;
+export default AdminCourses;

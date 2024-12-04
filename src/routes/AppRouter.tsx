@@ -1,6 +1,8 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
+import AdminAssignments from "@/pages/admin/Assignments";
 import AdminCourses from "@/pages/admin/Courses";
+import AdminExams from "@/pages/admin/Exams";
 import AdminHome from "@/pages/admin/Home";
 import AdminLayout from "@/layouts/AdminLayout";
 import AdminUsers from "@/pages/admin/Users";
@@ -116,6 +118,8 @@ const AppRouter: React.FC = () => {
                   <Route path="home" element={<AdminHome />} />
                   <Route path="users" element={<AdminUsers />} />
                   <Route path="courses" element={<AdminCourses />} />
+                  <Route path="exams" element={<AdminExams />} />
+                  <Route path="assignments" element={<AdminAssignments />} />
                 </Routes>
               </AdminLayout>
             </ProtectedRoute>
