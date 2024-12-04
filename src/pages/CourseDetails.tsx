@@ -28,10 +28,7 @@ const CourseDetails: React.FC = () => {
     const fetchCourse = async () => {
       try {
         if (courseId) {
-          // Tüm kursları al
           const courses: Course[] = await get("/Courses");
-
-          // course_id eşleşen kursu bul
           const selectedCourse = courses.find(
             (c) => c.course_id === parseInt(courseId, 10)
           );
@@ -44,7 +41,7 @@ const CourseDetails: React.FC = () => {
           const decodedToken: DecodedToken = jwtDecode(token!);
           const studentId = parseInt(decodedToken.user_id);
           setUserRole(decodedToken.role);
-          // Sınav sonucu kontrolü
+
           const examResults = await get(
             `/ExamResults/course/${courseId}/student/${studentId}`
           );
@@ -64,22 +61,26 @@ const CourseDetails: React.FC = () => {
   }, [courseId]);
 
   if (loading) {
-    return <p>Yükleniyor...</p>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-4 border-blue-500"></div>
+      </div>
+    );
   }
 
   return (
     <div>
       <Navbar />
       <div className="flex flex-col items-center justify-center min-h-screen p-8">
-        <h1 className="text-3xl font-bold mb-4">
+        <h1 className="text-4xl font-extrabold text-gray-100 mb-4 text-center uppercase">
           {course?.title || "Kurs Adı Bilinmiyor"}
         </h1>
-        <p className="text-lg mb-8">
+        <p className="text-lg mb-8 text-gray-300 text-center max-w-2xl">
           {course?.description || "Açıklama bulunamadı"}
         </p>
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-6 w-full max-w-lg">
           <Button
-            className="text-2xl p-8 bg-blue-500 text-white rounded"
+            className="btn-shared btn-hover btn-blue py-8 px-4"
             onClick={() =>
               navigate(`/${userRole}/courses/${courseId}/materials`)
             }
@@ -87,7 +88,7 @@ const CourseDetails: React.FC = () => {
             Materyal
           </Button>
           <Button
-            className="text-2xl p-8 bg-green-500 text-white rounded"
+            className="btn-shared btn-hover btn-green py-8 px-4"
             onClick={() =>
               navigate(`/${userRole}/courses/${courseId}/assignments`)
             }
@@ -95,9 +96,9 @@ const CourseDetails: React.FC = () => {
             Ödevler
           </Button>
           <Button
-            className={`text-2xl p-8 ${
-              hasExamResult ? "bg-purple-500" : "bg-yellow-500"
-            } text-white rounded`}
+            className={`btn-shared btn-hover py-8 px-4 ${
+              hasExamResult ? "btn-purple" : "btn-yellow"
+            }`}
             onClick={() =>
               navigate(
                 hasExamResult
@@ -107,17 +108,17 @@ const CourseDetails: React.FC = () => {
             }
             disabled={hasExamResult}
           >
-            {hasExamResult ? `Sinav sonucunuz : ${result}` : "Sınavlar"}
+            {hasExamResult ? `Sınav Sonucunuz: ${result}` : "Sınavlar"}
           </Button>
           <Button
-            className="text-2xl p-8 bg-red-500 text-white rounded"
+            className="btn-shared btn-hover btn-red py-8 px-4"
             onClick={() => navigate(`/${userRole}/courses/${courseId}/forum`)}
           >
             Forum
           </Button>
           {userRole === "instructor" && (
             <Button
-              className="text-2xl p-8 bg-teal-500 text-white rounded"
+              className="btn-shared btn-hover btn-teal "
               onClick={() =>
                 navigate(`/${userRole}/courses/${courseId}/students`)
               }

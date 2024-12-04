@@ -1,16 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { Button } from "../components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "../components/ui/card";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
-import { post } from "@/services/ApiHelper";
+import SignupCard from "../components/SignupCard"; // Import edilen Card
 
 interface SignupFormValues extends Record<string, unknown> {
   name: string;
@@ -20,16 +11,20 @@ interface SignupFormValues extends Record<string, unknown> {
 }
 
 const Signup: React.FC = () => {
-  const { register, handleSubmit, reset } = useForm<SignupFormValues>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<SignupFormValues>();
   const navigate = useNavigate();
 
   const onSubmit = async (data: SignupFormValues) => {
     try {
       if (!data.role) {
-        data.role = "student";
+        data.role = "student"; // Varsayılan olarak Student atanıyor
       }
 
-      await post("/Auth/register", data);
       alert("Signup successful. Please login to continue.");
       navigate("/login");
     } catch (error) {
@@ -41,55 +36,18 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-500">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <h1 className="text-2xl font-bold">Sign Up</h1>
-          <p className="text-gray-600">Create your account</p>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="Enter your name"
-                {...register("name", { required: "Name is required" })}
-              />
-            </div>
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                {...register("email", { required: "Email is required" })}
-              />
-            </div>
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                {...register("password", { required: "Password is required" })}
-              />
-            </div>
-            <Button type="submit" className="w-full">
-              Sign Up
-            </Button>
-          </form>
-        </CardContent>
-        <CardFooter>
-          <p className="text-sm text-gray-600">
-            Already have an account?{" "}
-            <a href="/login" className="text-blue-500">
-              Log in
-            </a>
-          </p>
-        </CardFooter>
-      </Card>
+    <div className="flex min-h-screen items-center justify-center bg-black">
+      <div className="flex relative">
+        {/* Gradient Çerçeve */}
+        <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-pink-500 via-blue-500 to-purple-500 animate-spin-slow blur-sm"></div>
+
+        {/* Signup Card */}
+        <SignupCard
+          onSubmit={handleSubmit(onSubmit)}
+          register={register}
+          errors={errors}
+        />
+      </div>
     </div>
   );
 };

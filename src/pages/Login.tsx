@@ -1,17 +1,9 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { Button } from "../components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "../components/ui/card";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
 import { post } from "../services/ApiHelper";
 import { useAuth } from "../hooks/useAuth";
+import LoginCard from "../components/LoginCard"; // LoginCard bileşenini import ediyoruz
 import { jwtDecode } from "jwt-decode";
 
 interface LoginFormValues {
@@ -20,7 +12,11 @@ interface LoginFormValues {
 }
 
 const Login: React.FC = () => {
-  const { register, handleSubmit } = useForm<LoginFormValues>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormValues>();
   const navigate = useNavigate();
   const { login, token } = useAuth();
 
@@ -46,15 +42,10 @@ const Login: React.FC = () => {
 
   const onSubmit = async (data: LoginFormValues) => {
     try {
-      // API'ye istek yap
       const response = await post("/Auth/login", data);
 
-      // Eğer token varsa (başarılı login)
       if (response.token) {
-        // Token'ı localStorage'a kaydet
         login(response.token);
-
-        // Kullanıcının rolüne göre yönlendirme yap
         switch (response.role) {
           case "student":
             navigate("/student/home");
@@ -79,46 +70,18 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <h1 className="text-2xl font-bold">Login</h1>
-          <p className="text-gray-600">Please sign in to your account</p>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                {...register("email", { required: "Email is required" })}
-              />
-            </div>
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                {...register("password", { required: "Password is required" })}
-              />
-            </div>
-            <Button type="submit" className="w-full">
-              Sign In
-            </Button>
-          </form>
-        </CardContent>
-        <CardFooter>
-          <p className="text-sm text-gray-600">
-            Don't have an account?{" "}
-            <a href="/signup" className="text-blue-500">
-              Sign up
-            </a>
-          </p>
-        </CardFooter>
-      </Card>
+    <div className="flex min-h-screen items-center justify-center bg-black">
+      <div className="flex relative">
+        {/* Gradient Çerçeve */}
+        <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-pink-500 via-blue-500 to-purple-500 animate-spin-slow blur-sm"></div>
+
+        {/* Login Card */}
+        <LoginCard
+          onSubmit={handleSubmit(onSubmit)}
+          register={register}
+          errors={errors}
+        />
+      </div>
     </div>
   );
 };

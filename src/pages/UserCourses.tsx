@@ -36,7 +36,6 @@ const Courses: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // API'den kullanıcının kurslarını getir
     const getCourses = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -45,15 +44,12 @@ const Courses: React.FC = () => {
           const userId = decodedToken.user_id;
           setUserRole(decodedToken.role);
 
-          // Kullanıcının kayıtlı olduğu kursları getirmek için API isteği
           if (decodedToken.role === "instructor") {
             const userCoursesData = await get(`/Courses/instructor/${userId}`);
             setCourses(userCoursesData);
           } else if (decodedToken.role === "student") {
             const userCoursesData = await get(`/Courses/student/${userId}`);
             setCourses(userCoursesData);
-          } else {
-            console.error("Rol belirlenemedi");
           }
         }
       } catch (error) {
@@ -89,18 +85,22 @@ const Courses: React.FC = () => {
   };
 
   if (loading) {
-    return <p>Yükleniyor...</p>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-4 border-blue-500"></div>
+      </div>
+    );
   }
 
   return (
     <div>
       <Navbar />
-      <div className="flex flex-col items-center justify-center min-h-screen p-8">
+      <div className="flex flex-col items-center justify-center min-h-screen p-8 ">
         {userRole === "instructor" && (
           <div className="mb-8">
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button className="p-4 bg-green-500 text-white rounded">
+                <Button className="p-4 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-lg shadow-lg hover:shadow-xl transition-all">
                   Yeni Kurs Ekle
                 </Button>
               </AlertDialogTrigger>
@@ -129,7 +129,7 @@ const Courses: React.FC = () => {
                   </AlertDialogCancel>
                   <Button
                     onClick={handleAddCourse}
-                    className="bg-blue-500 text-white"
+                    className="bg-blue-500 text-white hover:bg-blue-700 transition-all"
                   >
                     Kurs Ekle
                   </Button>
@@ -139,11 +139,19 @@ const Courses: React.FC = () => {
           </div>
         )}
         {courses.length > 0 ? (
-          <div className="grid grid-cols-2 gap-4">
+          <div
+            className={`grid ${
+              courses.length === 1
+                ? "grid-cols-1"
+                : courses.length === 2
+                ? "grid-cols-2"
+                : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+            } gap-6 w-full max-w-5xl place-items-center`}
+          >
             {courses.map((course) => (
               <Button
                 key={course.course_id}
-                className="text-2xl p-12 bg-blue-500 text-white rounded"
+                className="text-xl py-8 px-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg shadow-md hover:shadow-xl transition-transform transform hover:scale-105 uppercase"
                 onClick={() =>
                   navigate(`/${userRole}/courses/${course.course_id}`)
                 }
@@ -154,18 +162,18 @@ const Courses: React.FC = () => {
           </div>
         ) : userRole === "student" ? (
           <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4">
+            <h1 className="text-4xl font-bold mb-4 text-gray-800">
               Hiçbir kursa katılmadın, katılmak için tıkla
             </h1>
             <Button
-              className="p-4 bg-green-500 text-white rounded"
+              className="p-4 bg-green-500 text-white rounded-lg shadow-lg hover:shadow-xl transition-all"
               onClick={() => navigate("/${userRole}/allcourses")}
             >
               Kurslara Göz At
             </Button>
           </div>
         ) : (
-          "Henüz kurs eklenmedi."
+          <p className="text-gray-800 text-xl">Henüz kurs eklenmedi.</p>
         )}
       </div>
     </div>

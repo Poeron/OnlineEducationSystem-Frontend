@@ -1,9 +1,9 @@
 import React from "react";
 import { useAuth } from "../hooks/useAuth";
-import { useTheme } from "../hooks/useTheme";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaSignOutAlt } from "react-icons/fa";
+import { Button } from "@/components/ui/button";
 
 interface user {
   name: string;
@@ -11,30 +11,54 @@ interface user {
 
 const Navbar: React.FC = () => {
   const { logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const token = localStorage.getItem("token");
   const user: user = jwtDecode(token!);
   const navigate = useNavigate();
 
   return (
-    <nav className="flex justify-between items-center p-4 bg-gray-800 text-white">
+    <nav className="relative flex items-center p-4 bg-gradient-to-r from-red-800 to-blue-900 shadow-2xl">
+      {/* Sol Taraf (İkonlar) */}
       <div className="flex items-center gap-4">
-        {/* İleri ve Geri ikonları */}
-        <button onClick={() => navigate(-1)} className="text-white">
+        <Button
+          onClick={() => navigate(-1)}
+          size={"lg"}
+          variant="ghost"
+          className="text-white hover:text-gray-400 transition-all"
+          aria-label="Geri Git"
+        >
           <FaArrowLeft size={24} />
-        </button>
-        <button onClick={() => navigate(1)} className="text-white">
+        </Button>
+        <Button
+          onClick={() => navigate(1)}
+          size={"lg"}
+          variant="ghost"
+          className="text-white hover:text-gray-400 transition-all"
+          aria-label="İleri Git"
+        >
           <FaArrowRight size={24} />
-        </button>
+        </Button>
       </div>
-      <h1>Hoşgeldin {user ? user.name : "Kullanıcı"}!</h1>
+
+      {/* Ortadaki Metin */}
+      <h1 className="text-3xl font-bold mx-auto pr-20">
+        Hoşgeldin,{" "}
+        <span className="font-extrabold text-yellow-500">
+          {user ? user.name : "Kullanıcı"}
+        </span>
+        !
+      </h1>
+
+      {/* Sağ Taraf (Çıkış Yap İkonu) */}
       <div className="flex items-center gap-4">
-        <button onClick={toggleTheme} className="px-4 py-2 bg-gray-700 rounded">
-          {theme === "light" ? "Dark Mode" : "Light Mode"}
-        </button>
-        <button onClick={logout} className="px-4 py-2 bg-red-600 rounded">
-          Çıkış Yap
-        </button>
+        <Button
+          size={"lg"}
+          onClick={logout}
+          variant="ghost"
+          className="text-white hover:text-red-500 transition-all"
+          aria-label="Çıkış Yap"
+        >
+          <FaSignOutAlt />
+        </Button>
       </div>
     </nav>
   );

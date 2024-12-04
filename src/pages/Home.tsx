@@ -1,43 +1,41 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { Button } from "@/components/ui/button";
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div>
+    <div className="min-h-screen text-white flex flex-col">
       <Navbar />
-      <div className="grid grid-cols-2 gap-4 p-8">
-        <Button
-          color="blue"
-          className="text-5xl p-44 bg-blue-500 text-white rounded"
-          onClick={() => navigate("/student/mycourses")}
-        >
-          Kurslarım
-        </Button>
-        <Button
-          color="green"
-          className="text-5xl p-44 bg-green-500 text-white rounded"
-          onClick={() => navigate("/student/allcourses")}
-        >
-          Tüm Kurslar
-        </Button>
-        <Button
-          color="yellow"
-          className="text-5xl p-44 bg-yellow-500 text-white rounded"
-          onClick={() => navigate("/student/assignments")}
-        >
-          Ödevler
-        </Button>
-        <Button
-          color="red"
-          className="text-5xl p-44 bg-red-500 text-white rounded"
-          onClick={() => navigate("/student/certificates")}
-        >
-          Sertifikalar
-        </Button>
+      <div className="flex-grow flex flex-col justify-center items-center">
+        <h1 className="text-4xl font-bold text-center mb-12">Öğrenci Paneli</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <button
+            className="btn-shared btn-blue py-12 px-6"
+            onClick={() => navigate("/student/mycourses")}
+          >
+            Kurslarım
+          </button>
+          <button
+            className="btn-shared btn-green py-12 px-6"
+            onClick={() => navigate("/student/allcourses")}
+          >
+            Tüm Kurslar
+          </button>
+          <button
+            className="btn-shared btn-yellow py-12 px-6"
+            onClick={() => navigate("/student/assignments")}
+          >
+            Ödevler
+          </button>
+          <button
+            className="btn-shared btn-red py-12 px-6"
+            onClick={() => navigate("/student/certificates")}
+          >
+            Sertifikalar
+          </button>
+        </div>
       </div>
     </div>
   );

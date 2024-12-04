@@ -130,15 +130,16 @@ const AssignmentsPage: React.FC = () => {
   return (
     <div>
       <Navbar />
-      <div className="flex flex-col items-center justify-center min-h-screen p-8">
-        <h1 className="text-3xl font-bold mb-8">
+      <div className="flex flex-col items-center justify-center text-white p-8">
+        <h1 className="text-4xl font-extrabold mb-8 text-center">
           {courseId ? `Kurs Ödevleri` : `Tüm Ödevler`}
         </h1>
+
         {userRole === "instructor" && (
           <div className="mb-8">
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button className="p-4 bg-green-500 text-white rounded">
+                <Button className="bg-green-500 text-white py-3 px-6 rounded-lg shadow-md hover:bg-green-600 transition-all">
                   Yeni Ödev Ekle
                 </Button>
               </AlertDialogTrigger>
@@ -155,6 +156,7 @@ const AssignmentsPage: React.FC = () => {
                     placeholder="Ödev Başlığı"
                     value={newAssignmentTitle}
                     onChange={(e) => setNewAssignmentTitle(e.target.value)}
+                    className="bg-gray-700 text-white border border-gray-600 rounded focus:ring-2 focus:ring-blue-500"
                   />
                   <Textarea
                     placeholder="Ödev Açıklaması"
@@ -162,21 +164,23 @@ const AssignmentsPage: React.FC = () => {
                     onChange={(e) =>
                       setNewAssignmentDescription(e.target.value)
                     }
+                    className="bg-gray-700 text-white border border-gray-600 rounded focus:ring-2 focus:ring-blue-500"
                   />
                   <Input
                     type="date"
                     value={newAssignmentDueDate}
-                    min={new Date().toISOString().split("T")[0]} // Geçmiş tarihler seçilemesin
+                    min={new Date().toISOString().split("T")[0]}
                     onChange={(e) => setNewAssignmentDueDate(e.target.value)}
+                    className="bg-gray-700 text-white border border-gray-600 rounded focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-gray-300 text-black">
+                  <AlertDialogCancel className="bg-gray-300 text-black py-2 px-4 rounded hover:bg-gray-400">
                     İptal
                   </AlertDialogCancel>
                   <Button
                     onClick={handleAddAssignment}
-                    className="bg-blue-500 text-white"
+                    className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-all"
                   >
                     Ödev Ekle
                   </Button>
@@ -185,6 +189,8 @@ const AssignmentsPage: React.FC = () => {
             </AlertDialog>
           </div>
         )}
+
+        {/* Ödev Listesi */}
         <AssignmentList
           assignments={assignments}
           onAssignmentClick={handleAssignmentClick}

@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import {
   Table,
-  TableCaption,
   TableHeader,
   TableBody,
   TableRow,
@@ -11,7 +10,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { get, post } from "@/services/ApiHelper"; // API Helper importu
+import { get, post } from "@/services/ApiHelper";
 import { jwtDecode } from "jwt-decode";
 import {
   AlertDialog,
@@ -44,7 +43,6 @@ const Materials: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [userRole, setUserRole] = useState<string>("");
 
-  // Yeni materyal bilgileri
   const [newMaterialTitle, setNewMaterialTitle] = useState<string>("");
   const [newMaterialContentType, setNewMaterialContentType] =
     useState<string>("");
@@ -86,7 +84,7 @@ const Materials: React.FC = () => {
 
       await post("/CourseMaterials", newMaterial);
       alert("Yeni materyal başarıyla eklendi!");
-      window.location.reload(); // Materyallerin yeniden yüklenmesi için sayfayı yenile
+      window.location.reload();
     } catch (error) {
       console.error("Materyal eklenirken hata oluştu:", error);
       alert("Materyal eklenemedi. Lütfen tekrar deneyin.");
@@ -98,60 +96,71 @@ const Materials: React.FC = () => {
   }
 
   return (
-    <div>
+    <section>
       <Navbar />
-      <div className="flex flex-col items-center justify-center min-h-screen p-8">
-        <h1 className="text-3xl font-bold mb-8">
+      <div className="w-full max-w-6xl mx-auto px-4 pt-12">
+        <h1 className="text-4xl font-extrabold text-center mb-8 text-white">
           Materyaller - Kurs ID: {courseId}
         </h1>
-        <Table className="shadow-md w-full max-w-4xl">
-          <TableCaption>Kurs materyallerinizin listesi</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Ad</TableHead>
-              <TableHead>Değiştirme Tarihi</TableHead>
-              <TableHead>Dosya Türü</TableHead>
-              <TableHead>İndir</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {materials.map((material) => {
-              // updated_at tarihini formatla
-              const formattedDate = new Date(
-                material.updated_at
-              ).toLocaleDateString("tr-TR", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              });
+        <div className="rounded-2xl border border-white  shadow-xl">
+          <Table className="w-full rounded-lg">
+            <TableHeader>
+              <TableRow className=" text-gray-200">
+                <TableHead className="text-left px-4 py-3">Ad</TableHead>
+                <TableHead className="text-left px-4 py-3">
+                  Değiştirme Tarihi
+                </TableHead>
+                <TableHead className="text-left px-4 py-3">
+                  Dosya Türü
+                </TableHead>
+                <TableHead className="text-center px-4 py-3">İndir</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {materials.map((material) => {
+                const formattedDate = new Date(
+                  material.updated_at
+                ).toLocaleDateString("tr-TR", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                });
 
-              return (
-                <TableRow key={material.material_id}>
-                  <TableCell className="font-medium">
-                    {material.title}
-                  </TableCell>
-                  <TableCell>{formattedDate}</TableCell>
-                  <TableCell>{material.content_type}</TableCell>
-                  <TableCell>
-                    <Button
-                      className="bg-blue-500 text-white p-2 rounded"
-                      onClick={() =>
-                        window.open(material.content_url, "_blank")
-                      }
-                    >
-                      İndir
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+                return (
+                  <TableRow
+                    key={material.material_id}
+                    className="hover:shadow-md transition-all"
+                  >
+                    <TableCell className="px-4 py-3 font-medium text-gray-200">
+                      {material.title}
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-gray-400">
+                      {formattedDate}
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-gray-400">
+                      {material.content_type || "Yok"}
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-center">
+                      <Button
+                        className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                        onClick={() =>
+                          window.open(material.content_url, "_blank")
+                        }
+                      >
+                        İndir
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
         {userRole === "instructor" && (
-          <div className="mt-8">
+          <div className="mt-8 flex justify-center">
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button className="bg-green-500 text-white p-4 rounded">
+                <Button className="bg-green-500 text-white py-3 px-6 rounded hover:bg-green-600">
                   Yeni Materyal Ekle
                 </Button>
               </AlertDialogTrigger>
@@ -180,12 +189,12 @@ const Materials: React.FC = () => {
                   />
                 </div>
                 <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-gray-300 text-black">
+                  <AlertDialogCancel className="bg-gray-300 text-black py-2 px-4 rounded">
                     İptal
                   </AlertDialogCancel>
                   <Button
                     onClick={handleAddMaterial}
-                    className="bg-blue-500 text-white"
+                    className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
                   >
                     Materyal Ekle
                   </Button>
@@ -195,7 +204,7 @@ const Materials: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 };
 
