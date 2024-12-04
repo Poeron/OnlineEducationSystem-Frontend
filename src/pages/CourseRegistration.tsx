@@ -37,7 +37,6 @@ const CourseRegistration: React.FC = () => {
             const studentId = decodedToken.user_id;
             const enrollments = await get(`/Courses/student/${studentId}`);
 
-            // Kullanıcının bu kursa kayıtlı olup olmadığını kontrol et
             const registered = enrollments.some(
               (enrollment: { course_id: number }) =>
                 enrollment.course_id === parseInt(courseId)
@@ -63,13 +62,11 @@ const CourseRegistration: React.FC = () => {
         const decodedToken: DecodedToken = jwtDecode(token);
         const studentId = decodedToken.user_id;
 
-        // API isteği için gereken body oluştur
         const requestBody = {
           course_id: parseInt(courseId ?? "", 10),
           student_id: studentId,
         };
 
-        // Kayıt isteğini yap
         await post("/CourseEnrollments", requestBody);
         navigate(`/student/courses/${courseId}`);
       } else {
@@ -82,38 +79,40 @@ const CourseRegistration: React.FC = () => {
   };
 
   if (loading) {
-    return <p>Yükleniyor...</p>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
+        <p className="text-xl font-semibold animate-pulse">Yükleniyor...</p>
+      </div>
+    );
   }
 
   if (error) {
     return (
       <div>
         <Navbar />
-        <div className="flex flex-col items-center justify-center min-h-screen p-8">
-          <p className="text-red-500 text-lg font-bold">{error}</p>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-8 text-red-500">
+          <p className="text-lg font-bold">{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className=" text-white min-h-screen">
       <Navbar />
-      <div className="flex flex-col items-center justify-center min-h-screen p-8 text-black">
+      <div className="flex flex-col items-center justify-center p-8">
         {course ? (
-          <div className="w-full max-w-3xl border p-8 rounded-lg shadow-md bg-gray-100">
-            <h1 className="text-3xl font-bold mb-4">
-              Kurs Adı: {course.title}
-            </h1>
-            <h2 className="text-xl font-semibold mb-4">
-              Kurs Sahibi ID: {course.instructor_id}
+          <div className="w-full max-w-3xl bg-gray-800 rounded-lg shadow-lg p-8">
+            <h1 className="text-4xl font-bold mb-4">{course.title}</h1>
+            <h2 className="text-lg text-gray-400 mb-6">
+              Eğitmen ID: {course.instructor_id}
             </h2>
-            <p className="text-lg mb-8">
-              Kurs Açıklaması: {course.description}
-            </p>
+            <p className="text-gray-300 mb-8">{course.description}</p>
             <Button
-              className={`bg-blue-500 text-white p-4 rounded ${
-                isRegistered ? "opacity-50 cursor-not-allowed" : ""
+              className={`w-full py-3 text-lg font-semibold rounded-lg transition-all ${
+                isRegistered
+                  ? "bg-gray-500 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
               }`}
               onClick={handleRegister}
               disabled={isRegistered}
@@ -122,7 +121,7 @@ const CourseRegistration: React.FC = () => {
             </Button>
           </div>
         ) : (
-          <p>Kurs bilgisi bulunamadı.</p>
+          <p className="text-gray-300">Kurs bilgisi bulunamadı.</p>
         )}
       </div>
     </div>

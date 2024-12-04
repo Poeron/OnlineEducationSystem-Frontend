@@ -12,9 +12,6 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     <div className="admin-layout">
       <Sidebar />
       <div className="admin-content">
-        <header className="admin-header">
-          <h1>Admin Dashboard</h1>
-        </header>
         <main className="admin-main">
           {children}
           <Outlet />

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { get, post, remove } from "@/services/ApiHelper"; // Added `del` for delete request
 import { jwtDecode } from "jwt-decode";
 import { useParams } from "react-router-dom";
-import { FaTrashAlt } from "react-icons/fa"; 
+import { FaTrashAlt } from "react-icons/fa";
 
 interface Message {
   comment_id: string;
@@ -88,7 +88,7 @@ const Forum: React.FC = () => {
 
   const handleDeleteMessage = async (commentId: string) => {
     try {
-      await remove(`/ForumComments/${commentId}`); 
+      await remove(`/ForumComments/${commentId}`);
       fetchMessages();
       alert("Mesaj başarıyla silindi.");
     } catch (error) {
@@ -98,50 +98,73 @@ const Forum: React.FC = () => {
   };
 
   return (
-    <div>
+    <section className="h-screen overflow-y-hidden">
       <Navbar />
-      <div className="flex flex-col items-center justify-center min-h-screen p-8">
-        <h1 className="text-3xl font-bold mb-8">
-          {course ? `${course.title} FORUMU` : "Forum"}
+      <div className="flex flex-col items-center justify-center min-h-screen p-8 ">
+        <h1 className="text-4xl font-bold text-white mb-12">
+          {course ? `${course.title.toUpperCase()} FORUMU` : "FORUM"}
         </h1>
-        <div className="w-full max-w-4xl space-y-4 mb-8">
-          {messages.map((message) => (
-            <div
-              key={message.comment_id}
-              className="border p-4 rounded flex justify-between items-center"
-            >
-              <div>
-                <h2 className="font-bold mb-2">{message.author_name}</h2>
-                <p>{message.comment_text}</p>
+
+        {/* Messages List */}
+        <div className="w-full max-w-4xl space-y-6 mb-12 overflow-y-auto max-h-[500px] bg-zinc-900 p-4 rounded-lg shadow-md">
+          {messages.map((message) => {
+            const formattedDate = new Date(
+              message.created_at
+            ).toLocaleDateString("tr-TR", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            });
+
+            return (
+              <div
+                key={message.comment_id}
+                className="bg-gray-300 shadow-md p-6 rounded-lg flex justify-between items-start hover:shadow-lg transition-shadow duration-300"
+              >
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-700 mb-2">
+                    {message.author_name}
+                  </h2>
+                  <p className="text-gray-600">{message.comment_text}</p>
+                </div>
+                <div className="flex flex-col items-end">
+                  <span className="text-sm text-gray-500 mb-2">
+                    {formattedDate}
+                  </span>
+                  {userRole === "instructor" && (
+                    <button
+                      className="text-red-500 hover:text-red-700 p-2 rounded focus:outline-none transition-colors"
+                      onClick={() => handleDeleteMessage(message.comment_id)}
+                    >
+                      <FaTrashAlt className="w-5 h-5" />
+                    </button>
+                  )}
+                </div>
               </div>
-              {userRole === "instructor" && ( // Check if user is an instructor
-                <button
-                  className="text-red-500 hover:text-red-700 p-2 rounded focus:outline-none"
-                  onClick={() => handleDeleteMessage(message.comment_id)}
-                >
-                  <FaTrashAlt className="w-6 h-6" /> {/* Trash icon */}
-                </button>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
-        <div className="flex items-center w-full max-w-4xl">
+
+        {/* Message Input */}
+        <div className="flex items-center w-full max-w-4xl p-4 rounded-lg shadow-md">
           <input
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Metin Girin!"
-            className="flex-1 p-4 border rounded mr-4"
+            placeholder="Mesajınızı yazın..."
+            className="flex-1 p-4 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 "
           />
           <Button
-            className="p-4 bg-blue-500 text-white rounded"
+            className="ml-4 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-all"
             onClick={handleSendMessage}
           >
             Gönder
           </Button>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

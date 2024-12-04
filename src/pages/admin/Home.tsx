@@ -3,6 +3,9 @@ import "@/assets/css/AdminHomepage.css";
 const AdminHomepage = () => {
   return (
     <div className="admin-homepage">
+      <header className="admin-header">
+        <h1>Admin Dashboard</h1>
+      </header>
       {/* Main Content */}
       <main className="main-content">
         <header>

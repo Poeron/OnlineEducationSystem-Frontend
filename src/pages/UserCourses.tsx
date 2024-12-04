@@ -95,7 +95,12 @@ const Courses: React.FC = () => {
   return (
     <div>
       <Navbar />
-      <div className="flex flex-col items-center justify-center min-h-screen p-8 ">
+      <div className="flex flex-col items-center justify-center min-h-screen p-8">
+        <h1 className="text-3xl font-bold text-white mb-6">
+          {userRole === "instructor"
+            ? "Mevcut Kurslarım"
+            : "Kayıtlı Olduğum Kurslar"}
+        </h1>
         {userRole === "instructor" && (
           <div className="mb-8">
             <AlertDialog>
@@ -139,35 +144,29 @@ const Courses: React.FC = () => {
           </div>
         )}
         {courses.length > 0 ? (
-          <div
-            className={`grid ${
-              courses.length === 1
-                ? "grid-cols-1"
-                : courses.length === 2
-                ? "grid-cols-2"
-                : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-            } gap-6 w-full max-w-5xl place-items-center`}
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
             {courses.map((course) => (
-              <Button
+              <div
                 key={course.course_id}
-                className="text-xl py-8 px-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg shadow-md hover:shadow-xl transition-transform transform hover:scale-105 uppercase"
+                className="flex flex-col items-center justify-center h-40 w-64 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg shadow-md hover:shadow-xl transition-transform transform hover:scale-105 p-4 cursor-pointer"
                 onClick={() =>
                   navigate(`/${userRole}/courses/${course.course_id}`)
                 }
               >
-                {course.title}
-              </Button>
+                <h2 className="text-xl font-bold text-center truncate w-full">
+                  {course.title.toUpperCase()}
+                </h2>
+              </div>
             ))}
           </div>
         ) : userRole === "student" ? (
           <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4 text-gray-800">
+            <h1 className="text-4xl font-bold  mb-4 text-gray-800">
               Hiçbir kursa katılmadın, katılmak için tıkla
             </h1>
             <Button
               className="p-4 bg-green-500 text-white rounded-lg shadow-lg hover:shadow-xl transition-all"
-              onClick={() => navigate("/${userRole}/allcourses")}
+              onClick={() => navigate("/student/allcourses")}
             >
               Kurslara Göz At
             </Button>

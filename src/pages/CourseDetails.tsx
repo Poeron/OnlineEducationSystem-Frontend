@@ -118,7 +118,7 @@ const CourseDetails: React.FC = () => {
           </Button>
           {userRole === "instructor" && (
             <Button
-              className="btn-shared btn-hover btn-teal "
+              className="btn-shared btn-hover btn-teal py-8 px-4"
               onClick={() =>
                 navigate(`/${userRole}/courses/${courseId}/students`)
               }

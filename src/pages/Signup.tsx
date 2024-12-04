@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import SignupCard from "../components/SignupCard"; // Import edilen Card
+import { post } from "../services/ApiHelper";
 
 interface SignupFormValues extends Record<string, unknown> {
   name: string;
@@ -24,7 +25,7 @@ const Signup: React.FC = () => {
       if (!data.role) {
         data.role = "student"; // Varsayılan olarak Student atanıyor
       }
-
+      await post("/Auth/register", data);
       alert("Signup successful. Please login to continue.");
       navigate("/login");
     } catch (error) {
@@ -36,7 +37,7 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black">
+    <div className="flex min-h-screen items-center justify-center">
       <div className="flex relative">
         {/* Gradient Çerçeve */}
         <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-pink-500 via-blue-500 to-purple-500 animate-spin-slow blur-sm"></div>

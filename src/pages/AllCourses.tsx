@@ -23,17 +23,14 @@ const AllCourses: React.FC = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        // Tüm kursları getirmek için API isteği
         const allCourses = await get("/Courses");
         setCourses(allCourses);
 
-        // Kullanıcının token'ını almak ve çözmek
         const token = localStorage.getItem("token");
         if (token) {
           const decodedToken: DecodedToken = jwtDecode(token);
           const studentId = decodedToken.user_id;
 
-          // Kullanıcının kayıtlı olduğu kursları getirmek için API isteği
           const userCoursesData = await get(`/Courses/student/${studentId}`);
           setUserCourses(
             userCoursesData.map(
@@ -56,26 +53,26 @@ const AllCourses: React.FC = () => {
   return (
     <div>
       <Navbar />
-      <div className="flex flex-col items-center justify-center min-h-screen p-8 text-black">
-        <h1 className="text-3xl font-bold mb-8">Tüm Kurslar</h1>
-        <div className="grid grid-cols-2 gap-4">
+      <div className="flex flex-col items-center justify-center min-h-screen p-8  text-white">
+        <h1 className="text-4xl font-extrabold mb-8">Tüm Kurslar</h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full max-w-7xl justify-items-center">
           {courses.map((course) => (
             <div
               key={course.course_id}
-              className="relative group text-black border p-12 rounded-lg bg-gray-100 hover:bg-gray-200 cursor-pointer"
+              className="relative bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all w-full max-w-sm"
             >
-              <span className="text-2xl text-black font-bold">
-                {course.title}
-              </span>
-              <p className="mt-2 text-sm text-gray-600">{course.description}</p>
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <h2 className="text-2xl font-bold text-white mb-2">
+                {course.title.toUpperCase()}
+              </h2>
+              <p className="text-sm text-gray-400">{course.description}</p>
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-black bg-opacity-50 rounded-lg">
                 {userCourses.includes(course.course_id) ? (
-                  <span className="text-lg bg-green-500 text-white p-2 rounded">
+                  <span className="text-lg bg-green-500 text-white px-4 py-2 rounded-lg">
                     Zaten Kayıtlısınız
                   </span>
                 ) : (
                   <Button
-                    className="bg-blue-500 text-white p-4 rounded"
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-all"
                     onClick={() => handleRegisterClick(course.course_id)}
                   >
                     Hemen Kayıt Ol

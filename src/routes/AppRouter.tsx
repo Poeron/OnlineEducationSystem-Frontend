@@ -23,8 +23,7 @@ import CourseStudents from "@/pages/CourseStudents";
 import Forum from "@/pages/Forum";
 import Home from "../pages/Home";
 import InstructorCourses from "@/pages/Forum";
-import InstructorForum from "@/pages/Forum";
-import InstructorQuiz from "@/pages/Forum";
+import InstructorQuiz from "@/pages/CreateExam";
 import Login from "../pages/Login";
 import Materials from "@/pages/Materials";
 import MyCourses from "@/pages/UserCourses";
@@ -103,10 +102,7 @@ const AppRouter: React.FC = () => {
                   path="courses/:courseId/students"
                   element={<CourseStudents />}
                 />
-                <Route
-                  path="courses/:courseId/forum"
-                  element={<InstructorForum />}
-                />
+                <Route path="courses/:courseId/forum" element={<Forum />} />
                 <Route
                   path="assignments/:assignmentId"
                   element={<AssignmentDetails />}

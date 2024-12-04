@@ -180,25 +180,29 @@ const AssignmentPage: React.FC = () => {
   return (
     <div>
       <Navbar />
-      <div className="flex flex-col items-center justify-center min-h-screen p-8">
-        <h1 className="text-3xl font-bold mb-4">{assignmentData.title}</h1>
-        <p className="text-lg mb-8">Son tarih: {formattedDueDate}</p>
-        <div className="bg-gray-800 text-white p-6 rounded-lg shadow-md w-full max-w-4xl">
+      <div className="flex flex-col items-center min-h-screen p-8 text-white">
+        <h1 className="text-4xl font-extrabold mb-4">{assignmentData.title}</h1>
+        <p className="text-lg text-gray-300 mb-8">
+          Son tarih: {formattedDueDate}
+        </p>
+        <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
           <h2 className="text-2xl font-semibold mb-4">Yönergeler</h2>
-          <p className="mb-8">{assignmentData.description}</p>
+          <p className="mb-8 text-gray-300">{assignmentData.description}</p>
 
           {userRole === "student" ? (
             <div className="flex flex-col gap-4">
               <label className="flex items-center gap-2">
-                <span className="text-lg">Çalışmam:</span>
+                <span className="text-lg font-medium">Çalışmam:</span>
                 <input
                   type="file"
                   onChange={handleFileChange}
-                  className="text-white"
+                  className="text-white bg-gray-700 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </label>
               <Button
-                className="bg-blue-500 text-white p-4 rounded mt-4"
+                className={`bg-blue-500 hover:bg-blue-600 text-white p-4 rounded mt-4 transition-all ${
+                  !file && "opacity-50 cursor-not-allowed"
+                }`}
                 onClick={handleSubmit}
                 disabled={!file}
               >
@@ -207,7 +211,7 @@ const AssignmentPage: React.FC = () => {
             </div>
           ) : (
             <Button
-              className="bg-green-500 text-white p-4 rounded mt-4"
+              className="bg-green-500 hover:bg-green-600 text-white p-4 rounded mt-4 transition-all"
               onClick={handleViewSubmissions}
             >
               Teslim Edenleri Görüntüle
@@ -215,49 +219,62 @@ const AssignmentPage: React.FC = () => {
           )}
 
           {userRole === "instructor" && submissions.length > 0 && (
-            <Table className="shadow-md w-full max-w-4xl mt-8">
-              <TableCaption>Teslim edilen ödevlerin listesi</TableCaption>
-              <TableHeader>
+            <Table className="shadow-lg w-full mt-8 border-separate border-spacing-0">
+              <TableCaption className="text-lg text-gray-400">
+                Teslim edilen ödevlerin listesi
+              </TableCaption>
+              <TableHeader className="bg-gray-700">
                 <TableRow>
-                  <TableHead>Öğrenci Adı</TableHead>
-                  <TableHead>Not</TableHead>
-                  <TableHead>Ödev Linki</TableHead>
-                  <TableHead>Gönderme Tarihi</TableHead>
-                  <TableHead>Not Ver</TableHead>
+                  <TableHead className="text-left p-4 text-gray-300">
+                    Öğrenci Adı
+                  </TableHead>
+                  <TableHead className="text-left p-4 text-gray-300">
+                    Not
+                  </TableHead>
+                  <TableHead className="text-left p-4 text-gray-300">
+                    Ödev Linki
+                  </TableHead>
+                  <TableHead className="text-left p-4 text-gray-300">
+                    Gönderme Tarihi
+                  </TableHead>
+                  <TableHead className="text-left p-4 text-gray-300">
+                    Not Ver
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {submissions.map((submission) => (
-                  <TableRow key={submission.submission_id}>
-                    <TableCell className="font-medium">
-                      {submission.name}
-                    </TableCell>
-                    <TableCell>
+                  <TableRow
+                    key={submission.submission_id}
+                    className="hover:bg-gray-700 transition-all"
+                  >
+                    <TableCell className="p-4">{submission.name}</TableCell>
+                    <TableCell className="p-4">
                       {submission.grade !== null ? submission.grade : "-"}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-4">
                       <a
                         href={submission.submission_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-400 underline"
+                        className="text-blue-400 underline hover:text-blue-600 transition-all"
                       >
                         Ödevi Görüntüle
                       </a>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-4">
                       {new Date(submission.submitted_at).toLocaleString(
                         "tr-TR"
                       )}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-4">
                       <div className="flex gap-2 items-center">
                         <input
                           type="number"
                           min="0"
                           max="100"
                           placeholder="Not"
-                          className="p-2 rounded"
+                          className="w-20 p-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                           value={grades[submission.submission_id] || ""}
                           onChange={(e) =>
                             handleGradeChange(
@@ -267,7 +284,7 @@ const AssignmentPage: React.FC = () => {
                           }
                         />
                         <Button
-                          className="bg-blue-500 text-white p-2 rounded"
+                          className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded transition-all"
                           onClick={() =>
                             handleGradeSubmit(submission.submission_id)
                           }

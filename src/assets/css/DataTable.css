@@ -1,47 +1,92 @@
-.data-table {
-  margin-top: 20px;
-  width: 100%;
-}
-
+/* General table styles */
 .data-table table {
   width: 100%;
   border-collapse: collapse;
+  background-color: #1f2937;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .data-table th,
 .data-table td {
-  padding: 12px;
+  padding: 12px 16px;
   text-align: left;
-  border-bottom: 1px solid #ddd;
+  color: #ffffff;
 }
 
-.data-table th {
-  background-color: #333;
-  color: white;
+.data-table thead th {
+  background-color: #374151;
+  color: #ffffff;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  border-bottom: 2px solid #4b5563;
 }
 
-.data-table tr:hover {
-  background-color: #f5f5f5;
+.data-table tbody tr:nth-child(odd) {
+  background-color: #111827;
 }
 
-.data-table button {
-  padding: 8px 12px;
-  margin-right: 5px;
-  border: none;
-  background-color: #007bff;
-  color: white;
+.data-table tbody tr:nth-child(even) {
+  background-color: #1f2937;
+}
+
+.data-table tbody tr:hover {
+  background-color: #4b5563;
   cursor: pointer;
-  transition: background-color 0.3s;
+}
+
+.data-table td {
+  border-bottom: 1px solid #4b5563;
+  font-size: 0.9rem;
+}
+
+/* No data message */
+.data-table tbody tr td[colspan] {
+  text-align: center;
+  color: #9ca3af;
+  font-style: italic;
+  font-size: 1rem;
+}
+
+/* Action buttons */
+.data-table button {
+  background-color: #3b82f6;
+  color: #ffffff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-right: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .data-table button:hover {
-  background-color: #0056b3;
+  background-color: #2563eb;
+  transform: scale(1.05);
 }
 
-.data-table button:last-child {
-  background-color: #dc3545;
+.data-table button:active {
+  transform: scale(0.95);
 }
 
-.data-table button:last-child:hover {
-  background-color: #c82333;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .data-table table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .data-table th,
+  .data-table td {
+    font-size: 0.8rem;
+  }
+
+  .data-table button {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+  }
 }
