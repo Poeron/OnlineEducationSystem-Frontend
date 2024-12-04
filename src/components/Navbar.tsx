@@ -1,9 +1,15 @@
-import React from "react";
-import { useAuth } from "../hooks/useAuth";
-import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaArrowRight, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaArrowLeft,
+  FaArrowRight,
+  FaHome,
+  FaSignOutAlt,
+} from "react-icons/fa";
+
 import { Button } from "@/components/ui/button";
+import React from "react";
+import { jwtDecode } from "jwt-decode";
+import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 interface user {
   name: string;
@@ -36,6 +42,15 @@ const Navbar: React.FC = () => {
           aria-label="İleri Git"
         >
           <FaArrowRight size={24} />
+        </Button>
+        <Button
+          onClick={() => navigate("/")}
+          size={"lg"}
+          variant="ghost"
+          className="text-white hover:text-gray-400 transition-all"
+          aria-label="Ana Sayfa"
+        >
+          <FaHome size={24} />
         </Button>
       </div>
 
