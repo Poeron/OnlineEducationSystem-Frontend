@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
+import React, { useEffect, useState } from "react";
 import {
   Table,
-  TableCaption,
-  TableHeader,
   TableBody,
-  TableRow,
-  TableHead,
+  TableCaption,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
+import { get, patch, post } from "@/services/ApiHelper";
+
 import { Button } from "@/components/ui/button";
-import { useParams } from "react-router-dom";
-import { get, post, patch } from "@/services/ApiHelper";
+import Navbar from "../components/Navbar";
 import { jwtDecode } from "jwt-decode";
+import { useParams } from "react-router-dom";
 
 interface AssignmentData {
   title: string;
@@ -128,7 +129,7 @@ const AssignmentPage: React.FC = () => {
   const handleGradeSubmit = async (submissionId: number) => {
     const newGrade = grades[submissionId];
     try {
-      await patch(`/AssignmentSubmissions`, {
+      await patch(`/AssignmentSubmissions/grade`, {
         grade: newGrade,
         submission_id: submissionId,
       });

@@ -1,27 +1,39 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "../pages/Login";
-import Home from "../pages/Home";
-import ProtectedRoute from "../routes/ProtectedRoute";
-import Signup from "@/pages/Signup";
-import MyCourses from "@/pages/UserCourses";
-import CourseDetails from "@/pages/CourseDetails";
-import Materials from "@/pages/Materials";
-import AssignmentDetails from "@/pages/AssignmentDetails";
-import Forum from "@/pages/Forum";
-import Quiz from "@/pages/Quiz";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+
+import AdminAssignmentSubmissions from "@/pages/admin/AssignmentSubmissions";
+import AdminAssignments from "@/pages/admin/Assignments";
+import AdminCertificates from "@/pages/admin/Certificates";
+import AdminCourseEnrollments from "@/pages/admin/CourseEnrollments";
+import AdminCourseMaterials from "@/pages/admin/CourseMaterials";
+import AdminCourses from "@/pages/admin/Courses";
+import AdminExamQuestions from "@/pages/admin/ExamQuestions";
+import AdminExamResults from "@/pages/admin/ExamResults";
+import AdminExams from "@/pages/admin/Exams";
+import AdminForumComments from "@/pages/admin/ForumComments";
+import AdminHome from "@/pages/admin/Home";
+import AdminLayout from "@/layouts/AdminLayout";
+import AdminQuestionOptions from "@/pages/admin/QuestionOptions";
+import AdminUsers from "@/pages/admin/Users";
 import AllCourses from "@/pages/AllCourses";
-import CourseRegistration from "@/pages/CourseRegistration";
+import AssignmentDetails from "@/pages/AssignmentDetails";
 import Assignments from "@/pages/Assignments";
+import CourseDetails from "@/pages/CourseDetails";
+import CourseRegistration from "@/pages/CourseRegistration";
+import CourseStudents from "@/pages/CourseStudents";
+import Forum from "@/pages/Forum";
+import Home from "../pages/Home";
 import InstructorCourses from "@/pages/Forum";
 import InstructorForum from "@/pages/Forum";
 import InstructorQuiz from "@/pages/Forum";
-import AdminHome from "@/pages/admin/Home";
-import Welcome from "@/pages/Welcome";
-import CourseStudents from "@/pages/CourseStudents";
-import Users from "@/pages/admin/Users";
+import Login from "../pages/Login";
+import Materials from "@/pages/Materials";
+import MyCourses from "@/pages/UserCourses";
 import NotFound from "@/pages/NotFound";
-import AdminLayout from "@/layouts/AdminLayout";
+import ProtectedRoute from "../routes/ProtectedRoute";
+import Quiz from "@/pages/Quiz";
+import React from "react";
+import Signup from "@/pages/Signup";
+import Welcome from "@/pages/Welcome";
 
 const AppRouter: React.FC = () => {
   return (
@@ -109,12 +121,42 @@ const AppRouter: React.FC = () => {
           path="/admin/*"
           element={
             <ProtectedRoute role="admin">
-                <AdminLayout>
-                  <Routes>
-                    <Route path="home" element={<AdminHome />} />
-                    <Route path="users" element={<Users />} />
-                  </Routes>
-                </AdminLayout>
+              <AdminLayout>
+                <Routes>
+                  <Route path="/" element={<AdminHome />} />
+                  <Route path="home" element={<AdminHome />} />
+                  <Route path="users" element={<AdminUsers />} />
+                  <Route path="courses" element={<AdminCourses />} />
+                  <Route path="exams" element={<AdminExams />} />
+                  <Route path="assignments" element={<AdminAssignments />} />
+                  <Route
+                    path="assignment-submissions"
+                    element={<AdminAssignmentSubmissions />}
+                  />
+                  <Route
+                    path="course-enrollments"
+                    element={<AdminCourseEnrollments />}
+                  />
+                  <Route
+                    path="course-materials"
+                    element={<AdminCourseMaterials />}
+                  />
+                  <Route
+                    path="exam-questions"
+                    element={<AdminExamQuestions />}
+                  />
+                  <Route path="exam-results" element={<AdminExamResults />} />
+                  <Route
+                    path="forum-comments"
+                    element={<AdminForumComments />}
+                  />
+                  <Route
+                    path="question-options"
+                    element={<AdminQuestionOptions />}
+                  />
+                  <Route path="certificates" element={<AdminCertificates />} />
+                </Routes>
+              </AdminLayout>
             </ProtectedRoute>
           }
         />

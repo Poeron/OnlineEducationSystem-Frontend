@@ -1,0 +1,41 @@
+.admin-header {
+  padding: 20px;
+  background-color: #333;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.header-content h1 {
+  margin: 0;
+  font-size: 24px;
+  flex-grow: 1;
+}
+
+.create-btn {
+  padding: 10px 20px;
+  border: none;
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.create-btn:hover {
+  background-color: #218838;
+}
+
+.header-children {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
