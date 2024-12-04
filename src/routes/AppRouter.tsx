@@ -1,10 +1,18 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
+import AdminAssignmentSubmissions from "@/pages/admin/AssignmentSubmissions";
 import AdminAssignments from "@/pages/admin/Assignments";
+import AdminCertificates from "@/pages/admin/Certificates";
+import AdminCourseEnrollments from "@/pages/admin/CourseEnrollments";
+import AdminCourseMaterials from "@/pages/admin/CourseMaterials";
 import AdminCourses from "@/pages/admin/Courses";
+import AdminExamQuestions from "@/pages/admin/ExamQuestions";
+import AdminExamResults from "@/pages/admin/ExamResults";
 import AdminExams from "@/pages/admin/Exams";
+import AdminForumComments from "@/pages/admin/ForumComments";
 import AdminHome from "@/pages/admin/Home";
 import AdminLayout from "@/layouts/AdminLayout";
+import AdminQuestionOptions from "@/pages/admin/QuestionOptions";
 import AdminUsers from "@/pages/admin/Users";
 import AllCourses from "@/pages/AllCourses";
 import AssignmentDetails from "@/pages/AssignmentDetails";
@@ -115,11 +123,38 @@ const AppRouter: React.FC = () => {
             <ProtectedRoute role="admin">
               <AdminLayout>
                 <Routes>
+                  <Route path="/" element={<AdminHome />} />
                   <Route path="home" element={<AdminHome />} />
                   <Route path="users" element={<AdminUsers />} />
                   <Route path="courses" element={<AdminCourses />} />
                   <Route path="exams" element={<AdminExams />} />
                   <Route path="assignments" element={<AdminAssignments />} />
+                  <Route
+                    path="assignment-submissions"
+                    element={<AdminAssignmentSubmissions />}
+                  />
+                  <Route
+                    path="course-enrollments"
+                    element={<AdminCourseEnrollments />}
+                  />
+                  <Route
+                    path="course-materials"
+                    element={<AdminCourseMaterials />}
+                  />
+                  <Route
+                    path="exam-questions"
+                    element={<AdminExamQuestions />}
+                  />
+                  <Route path="exam-results" element={<AdminExamResults />} />
+                  <Route
+                    path="forum-comments"
+                    element={<AdminForumComments />}
+                  />
+                  <Route
+                    path="question-options"
+                    element={<AdminQuestionOptions />}
+                  />
+                  <Route path="certificates" element={<AdminCertificates />} />
                 </Routes>
               </AdminLayout>
             </ProtectedRoute>

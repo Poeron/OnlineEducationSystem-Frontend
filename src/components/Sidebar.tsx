@@ -9,7 +9,9 @@ const Sidebar = () => {
 
   return (
     <aside className="sidebar">
-      <h2>Admin Panel</h2>
+      <h2>
+        <a onClick={() => navigate("/admin")}>Admin Panel </a>
+      </h2>
       <nav>
         <ul>
           <li>
@@ -20,6 +22,9 @@ const Sidebar = () => {
           </li>
           <li>
             <a onClick={() => navigate("/admin/exams")}>Exams</a>
+          </li>
+          <li>
+            <a onClick={() => navigate("/admin/certificates")}>Certificates</a>
           </li>
           <li>
             <a onClick={() => navigate("/admin/assignments")}>Assignments</a>
