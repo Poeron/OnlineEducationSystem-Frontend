@@ -17,6 +17,7 @@ import AdminUsers from "@/pages/admin/Users";
 import AllCourses from "@/pages/AllCourses";
 import AssignmentDetails from "@/pages/AssignmentDetails";
 import Assignments from "@/pages/Assignments";
+import Certificates from "@/pages/Certificates";
 import CourseDetails from "@/pages/CourseDetails";
 import CourseRegistration from "@/pages/CourseRegistration";
 import CourseStudents from "@/pages/CourseStudents";
@@ -71,6 +72,7 @@ const AppRouter: React.FC = () => {
                   path="courses/:courseId/register"
                   element={<CourseRegistration />}
                 />
+                <Route path="certificates" element={<Certificates />} />
               </Routes>
             </ProtectedRoute>
           }
