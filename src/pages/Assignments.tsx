@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import { get, post } from "@/services/ApiHelper";
-import { jwtDecode } from "jwt-decode";
-import AssignmentList from "@/components/AssignmentList";
 import {
   AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogFooter,
-  AlertDialogTitle,
-  AlertDialogDescription,
   AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import React, { useEffect, useState } from "react";
+import { get, post } from "@/services/ApiHelper";
+import { useNavigate, useParams } from "react-router-dom";
+
+import AssignmentList from "@/components/AssignmentList";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import { jwtDecode } from "jwt-decode";
 
 interface Assignment {
   assignment_id: number; // Benzersiz ödev ID'si
@@ -115,7 +115,6 @@ const AssignmentsPage: React.FC = () => {
   if (error) {
     return (
       <div>
-        <Navbar />
         <div className="flex flex-col items-center justify-center min-h-screen p-8">
           <p className="text-red-500 text-lg font-bold">{error}</p>
         </div>
@@ -129,7 +128,6 @@ const AssignmentsPage: React.FC = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="flex flex-col items-center justify-center text-white p-8">
         <h1 className="text-4xl font-extrabold mb-8 text-center">
           {courseId ? `Kurs Ödevleri` : `Tüm Ödevler`}

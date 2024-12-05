@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import React, { useEffect, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { get } from "@/services/ApiHelper";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 interface Course {
   course_id: number;
@@ -52,7 +52,6 @@ const AllCourses: React.FC = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="flex flex-col items-center justify-center min-h-screen p-8  text-white">
         <h1 className="text-4xl font-extrabold mb-8">Tüm Kurslar</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full max-w-7xl justify-items-center">

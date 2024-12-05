@@ -3,7 +3,6 @@ import { get, post, remove } from "@/services/ApiHelper";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Navbar from "../components/Navbar";
 import { Textarea } from "@/components/ui/textarea";
 import { useParams } from "react-router-dom";
 
@@ -131,7 +130,6 @@ const CreateExamPage: React.FC = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="flex flex-col items-center justify-center min-h-screen p-8 text-white">
         <h1 className="text-3xl font-bold mb-8">Sınav Oluştur</h1>
         <div className="w-full max-w-4xl space-y-6">

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import { Button } from "@/components/ui/button";
+import React, { useEffect, useState } from "react";
 import { get, post } from "@/services/ApiHelper";
+import { useNavigate, useParams } from "react-router-dom";
+
+import { Button } from "@/components/ui/button";
 import { jwtDecode } from "jwt-decode";
 
 interface Course {
@@ -89,7 +89,6 @@ const CourseRegistration: React.FC = () => {
   if (error) {
     return (
       <div>
-        <Navbar />
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-8 text-red-500">
           <p className="text-lg font-bold">{error}</p>
         </div>
@@ -99,7 +98,6 @@ const CourseRegistration: React.FC = () => {
 
   return (
     <div className=" text-white min-h-screen">
-      <Navbar />
       <div className="flex flex-col items-center justify-center p-8">
         {course ? (
           <div className="w-full max-w-3xl bg-gray-800 rounded-lg shadow-lg p-8">

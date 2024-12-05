@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from "react";
-import Navbar from "../components/Navbar";
-import { Button } from "@/components/ui/button";
+import React, { useCallback, useEffect, useState } from "react";
 import { get, post, remove } from "@/services/ApiHelper"; // Added `del` for delete request
+
+import { Button } from "@/components/ui/button";
+import { FaTrashAlt } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import { useParams } from "react-router-dom";
-import { FaTrashAlt } from "react-icons/fa";
 
 interface Message {
   comment_id: string;
@@ -99,7 +99,6 @@ const Forum: React.FC = () => {
 
   return (
     <section className="h-screen overflow-y-hidden">
-      <Navbar />
       <div className="flex flex-col items-center justify-center min-h-screen p-8 ">
         <h1 className="text-4xl font-bold text-white mb-12">
           {course ? `${course.title.toUpperCase()} FORUMU` : "FORUM"}

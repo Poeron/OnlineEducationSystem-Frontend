@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { get, post } from "@/services/ApiHelper";
-import { jwtDecode } from "jwt-decode";
 import {
   AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogFooter,
-  AlertDialogTitle,
-  AlertDialogDescription,
   AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import React, { useEffect, useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { get, post } from "@/services/ApiHelper";
+
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { jwtDecode } from "jwt-decode";
+import { useParams } from "react-router-dom";
 
 interface Material {
   material_id: number;
@@ -97,7 +97,6 @@ const Materials: React.FC = () => {
 
   return (
     <section>
-      <Navbar />
       <div className="w-full max-w-6xl mx-auto px-4 pt-12">
         <h1 className="text-4xl font-extrabold text-center mb-8 text-white">
           Materyaller - Kurs ID: {courseId}

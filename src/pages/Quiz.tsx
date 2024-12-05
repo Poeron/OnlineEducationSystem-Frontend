@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import { Button } from "@/components/ui/button";
+import React, { useEffect, useState } from "react";
 import { get, post } from "@/services/ApiHelper";
+import { useNavigate, useParams } from "react-router-dom";
+
+import { Button } from "@/components/ui/button";
 import { jwtDecode } from "jwt-decode";
 
 interface QuestionOptions {
@@ -106,7 +106,6 @@ const QuizPage: React.FC = () => {
   if (quizFinished) {
     return (
       <div>
-        <Navbar />
         <div className="flex flex-col items-center justify-center min-h-screen p-8">
           <h1 className="text-3xl font-bold mb-8">
             Sınavınız Bitmiştir, Puanınız: {(points / questions.length) * 100}
@@ -136,7 +135,6 @@ const QuizPage: React.FC = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="flex flex-col items-center justify-center min-h-screen p-8">
         <div className="border p-8 rounded-lg shadow-md w-full max-w-3xl">
           <h1 className="text-2xl font-bold mb-6">

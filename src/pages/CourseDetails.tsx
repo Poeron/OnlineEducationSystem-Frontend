@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import { useNavigate, useParams } from "react-router-dom";
+
 import { Button } from "@/components/ui/button";
 import { get } from "@/services/ApiHelper";
 import { jwtDecode } from "jwt-decode";
@@ -70,7 +70,6 @@ const CourseDetails: React.FC = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="flex flex-col items-center justify-center min-h-screen p-8">
         <h1 className="text-4xl font-extrabold text-gray-100 mb-4 text-center uppercase">
           {course?.title || "Kurs Adı Bilinmiyor"}

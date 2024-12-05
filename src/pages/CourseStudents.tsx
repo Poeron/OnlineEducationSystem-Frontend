@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import {
-  Table,
-  TableCaption,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { get, remove } from "@/services/ApiHelper";
-import { Trash2 } from "lucide-react";
 import {
   AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogFooter,
-  AlertDialogTitle,
-  AlertDialogDescription,
   AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import React, { useEffect, useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { get, remove } from "@/services/ApiHelper";
+
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
+import { useParams } from "react-router-dom";
 
 interface Student {
   user_id: number;
@@ -104,7 +104,6 @@ const CourseStudents: React.FC = () => {
 
   return (
     <div className=" text-white min-h-screen">
-      <Navbar />
       <div className="flex flex-col items-center min-h-screen p-8">
         <h1 className="text-3xl font-bold mb-8">
           {courseTitle ? `${courseTitle} - Öğrenciler` : "Kurs Adı Bilinmiyor"}

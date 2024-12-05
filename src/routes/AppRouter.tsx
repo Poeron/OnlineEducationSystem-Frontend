@@ -33,6 +33,7 @@ import ProtectedRoute from "../routes/ProtectedRoute";
 import Quiz from "@/pages/Quiz";
 import React from "react";
 import Signup from "@/pages/Signup";
+import UserLayout from "@/layouts/UserLayout";
 
 const AppRouter: React.FC = () => {
   return (
@@ -48,32 +49,34 @@ const AppRouter: React.FC = () => {
           path="/student/*"
           element={
             <ProtectedRoute role={"student"}>
-              <Routes>
-                <Route path="home" element={<Home />} />
-                <Route path="mycourses" element={<MyCourses />} />
-                <Route path="assignments" element={<Assignments />} />
-                <Route
-                  path="assignments/:assignmentId"
-                  element={<AssignmentDetails />}
-                />
-                <Route path="courses/:courseId" element={<CourseDetails />} />
-                <Route
-                  path="courses/:courseId/materials"
-                  element={<Materials />}
-                />
-                <Route
-                  path="courses/:courseId/assignments"
-                  element={<Assignments />}
-                />
-                <Route path="courses/:courseId/quiz" element={<Quiz />} />
-                <Route path="courses/:courseId/forum" element={<Forum />} />
-                <Route path="allcourses" element={<AllCourses />} />
-                <Route
-                  path="courses/:courseId/register"
-                  element={<CourseRegistration />}
-                />
-                <Route path="certificates" element={<Certificates />} />
-              </Routes>
+              <UserLayout>
+                <Routes>
+                  <Route path="home" element={<Home />} />
+                  <Route path="mycourses" element={<MyCourses />} />
+                  <Route path="assignments" element={<Assignments />} />
+                  <Route
+                    path="assignments/:assignmentId"
+                    element={<AssignmentDetails />}
+                  />
+                  <Route path="courses/:courseId" element={<CourseDetails />} />
+                  <Route
+                    path="courses/:courseId/materials"
+                    element={<Materials />}
+                  />
+                  <Route
+                    path="courses/:courseId/assignments"
+                    element={<Assignments />}
+                  />
+                  <Route path="courses/:courseId/quiz" element={<Quiz />} />
+                  <Route path="courses/:courseId/forum" element={<Forum />} />
+                  <Route path="allcourses" element={<AllCourses />} />
+                  <Route
+                    path="courses/:courseId/register"
+                    element={<CourseRegistration />}
+                  />
+                  <Route path="certificates" element={<Certificates />} />
+                </Routes>
+              </UserLayout>
             </ProtectedRoute>
           }
         />
@@ -83,32 +86,34 @@ const AppRouter: React.FC = () => {
           path="/instructor/*"
           element={
             <ProtectedRoute role="instructor">
-              <Routes>
-                <Route path="home" element={<MyCourses />} />
-                <Route path="courses" element={<InstructorCourses />} />
-                <Route path="courses/:courseId" element={<CourseDetails />} />
-                <Route
-                  path="courses/:courseId/materials"
-                  element={<Materials />}
-                />
-                <Route
-                  path="courses/:courseId/assignments"
-                  element={<Assignments />}
-                />
-                <Route
-                  path="courses/:courseId/quiz"
-                  element={<InstructorQuiz />}
-                />
-                <Route
-                  path="courses/:courseId/students"
-                  element={<CourseStudents />}
-                />
-                <Route path="courses/:courseId/forum" element={<Forum />} />
-                <Route
-                  path="assignments/:assignmentId"
-                  element={<AssignmentDetails />}
-                />
-              </Routes>
+              <UserLayout>
+                <Routes>
+                  <Route path="home" element={<MyCourses />} />
+                  <Route path="courses" element={<InstructorCourses />} />
+                  <Route path="courses/:courseId" element={<CourseDetails />} />
+                  <Route
+                    path="courses/:courseId/materials"
+                    element={<Materials />}
+                  />
+                  <Route
+                    path="courses/:courseId/assignments"
+                    element={<Assignments />}
+                  />
+                  <Route
+                    path="courses/:courseId/quiz"
+                    element={<InstructorQuiz />}
+                  />
+                  <Route
+                    path="courses/:courseId/students"
+                    element={<CourseStudents />}
+                  />
+                  <Route path="courses/:courseId/forum" element={<Forum />} />
+                  <Route
+                    path="assignments/:assignmentId"
+                    element={<AssignmentDetails />}
+                  />
+                </Routes>
+              </UserLayout>
             </ProtectedRoute>
           }
         />

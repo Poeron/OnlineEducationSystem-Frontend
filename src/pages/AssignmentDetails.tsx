@@ -11,7 +11,6 @@ import {
 import { get, patch, post } from "@/services/ApiHelper";
 
 import { Button } from "@/components/ui/button";
-import Navbar from "../components/Navbar";
 import { jwtDecode } from "jwt-decode";
 import { useParams } from "react-router-dom";
 
@@ -148,7 +147,6 @@ const AssignmentPage: React.FC = () => {
   if (error) {
     return (
       <div>
-        <Navbar />
         <div className="flex flex-col items-center justify-center min-h-screen p-8">
           <p className="text-red-500 text-lg font-bold">{error}</p>
         </div>
@@ -159,7 +157,6 @@ const AssignmentPage: React.FC = () => {
   if (!assignmentData) {
     return (
       <div>
-        <Navbar />
         <div className="flex flex-col items-center justify-center min-h-screen p-8">
           <p className="text-red-500 text-lg font-bold">Ödev bulunamadı.</p>
         </div>
@@ -179,7 +176,6 @@ const AssignmentPage: React.FC = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="flex flex-col items-center min-h-screen p-8 text-white">
         <h1 className="text-4xl font-extrabold mb-4">{assignmentData.title}</h1>
         <p className="text-lg text-gray-300 mb-8">

@@ -13,7 +13,6 @@ import { get, post } from "@/services/ApiHelper";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Navbar from "../components/Navbar";
 import { Textarea } from "@/components/ui/textarea";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
@@ -95,7 +94,6 @@ const Courses: React.FC = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="flex flex-col items-center justify-center min-h-screen p-8">
         <h1 className="text-3xl font-bold text-white mb-6">
           {userRole === "instructor"

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import Navbar from "@/components/Navbar";
 import { get } from "@/services/ApiHelper";
 import { jwtDecode } from "jwt-decode";
 
@@ -46,7 +45,6 @@ const CertificatesPage: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      <Navbar />
       <section className="flex flex-col lg:flex-row gap-6 p-6 h-[92vh]">
         {/* Sertifika Kısmı */}
         <div className="flex-1 flex items-center justify-center bg-grey shadow-md rounded-lg border border-gray-300 p-6 h-full">
