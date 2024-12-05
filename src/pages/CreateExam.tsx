@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { get, post } from "@/services/ApiHelper";
+import { get, post, remove } from "@/services/ApiHelper";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ const CreateExamPage: React.FC = () => {
   const [description, setDescription] = useState<string>("");
   const [questions, setQuestions] = useState<
     {
+      question_id: number;
       question_text: string;
       options: { option_text: string; is_correct: boolean }[];
     }[]
@@ -76,10 +77,7 @@ const CreateExamPage: React.FC = () => {
         });
       }
 
-      setQuestions([
-        ...questions,
-        { question_text: currentQuestionText, options: currentOptions },
-      ]);
+      fetchExam();
 
       // Alanları sıfırla
       setCurrentQuestionText("");
@@ -91,19 +89,45 @@ const CreateExamPage: React.FC = () => {
     }
   };
 
+  const deleteQuestion = async (questionId: number) => {
+    try {
+      await remove(`/ExamQuestions/${questionId}`);
+      setQuestions(questions.filter((q) => q.question_id !== questionId));
+    } catch (error) {
+      console.error("Soru silinirken hata:", error);
+      alert("Bir hata oluştu, lütfen tekrar deneyin.");
+    }
+  };
+  const fetchExam = async () => {
+    try {
+      const examResponse = await get(`/Exams/course/${courseId}`);
+      setExamId(examResponse.exam_id);
+      const questionsResponse: {
+        question_id: number;
+        question_text: string;
+      }[] = await get(`/ExamQuestions/${examResponse.exam_id}`);
+      const optionsResponse: {
+        option_text: string;
+        is_correct: boolean;
+      }[][] = await Promise.all(
+        questionsResponse.map((q: { question_id: number }) =>
+          get(`/QuestionOptions/question/${q.question_id}`)
+        )
+      );
+      const questions = questionsResponse.map((q, i) => ({
+        question_id: q.question_id,
+        question_text: q.question_text,
+        options: optionsResponse[i],
+      }));
+      setQuestions(questions);
+    } catch (error) {
+      console.error("Sınav getirilirken hata:", error);
+      alert("Bir hata oluştu, lütfen tekrar deneyin.");
+    }
+  };
   useEffect(() => {
-    const fetchExam = async () => {
-      try {
-        const examResponse = await get(`/Exams/course/${courseId}`);
-        setExamId(examResponse.exam_id);
-      } catch (error) {
-        console.error("Sınav getirilirken hata:", error);
-        alert("Bir hata oluştu, lütfen tekrar deneyin.");
-      }
-    };
-
     fetchExam();
-  });
+  }, []);
 
   return (
     <div>
@@ -197,8 +221,18 @@ const CreateExamPage: React.FC = () => {
               <h2 className="text-xl font-semibold mb-4">Eklenmiş Sorular</h2>
               <ul>
                 {questions.map((q, index) => (
-                  <li key={index} className="mb-4">
-                    <p className="font-bold">{q.question_text}</p>
+                  <li key={q.question_id} className="mb-4">
+                    <div className="flex justify-between items-center">
+                      <p className="font-bold">
+                        {index + 1}. {q.question_text}
+                      </p>
+                      <Button
+                        onClick={() => deleteQuestion(q.question_id)}
+                        className="bg-red-500 text-white px-4 py-2"
+                      >
+                        Soruyu Sil
+                      </Button>
+                    </div>
                     <ul className="ml-4 list-disc">
                       {q.options.map((o, i) => (
                         <li
