@@ -43,19 +43,10 @@ const Navbar: React.FC = () => {
         >
           <FaArrowRight size={24} />
         </Button>
-        <Button
-          onClick={() => navigate("/")}
-          size={"lg"}
-          variant="ghost"
-          className="text-white hover:text-gray-400 transition-all"
-          aria-label="Ana Sayfa"
-        >
-          <FaHome size={24} />
-        </Button>
       </div>
 
       {/* Ortadaki Metin */}
-      <h1 className="text-3xl font-bold mx-auto pr-20">
+      <h1 className="text-3xl font-bold mx-auto ">
         Hoşgeldin,{" "}
         <span className="font-extrabold text-yellow-500">
           {user ? user.name : "Kullanıcı"}
@@ -65,6 +56,15 @@ const Navbar: React.FC = () => {
 
       {/* Sağ Taraf (Çıkış Yap İkonu) */}
       <div className="flex items-center gap-4">
+        <Button
+          onClick={() => navigate("/")}
+          size={"lg"}
+          variant="ghost"
+          className="text-white hover:text-gray-400 transition-all"
+          aria-label="Ana Sayfa"
+        >
+          <FaHome size={24} />
+        </Button>
         <Button
           size={"lg"}
           onClick={logout}

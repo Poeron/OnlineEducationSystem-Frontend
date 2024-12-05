@@ -102,7 +102,7 @@ const CertificatesPage: React.FC = () => {
               </div>
             </div>
           ) : (
-            <p className="text-center text-lg text-gray-600">
+            <p className="text-center text-3xl font-bold text-black">
               Sertifika seçiniz.
             </p>
           )}
