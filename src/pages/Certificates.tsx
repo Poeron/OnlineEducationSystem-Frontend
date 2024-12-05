@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
+
+import Navbar from "@/components/Navbar";
 import { get } from "@/services/ApiHelper";
 import { jwtDecode } from "jwt-decode";
-import Navbar from "@/components/Navbar";
 
 interface Certificate {
   course_title: string;
@@ -48,7 +49,7 @@ const CertificatesPage: React.FC = () => {
       <Navbar />
       <section className="flex flex-col lg:flex-row gap-6 p-6 h-[92vh]">
         {/* Sertifika Kısmı */}
-        <div className="flex-1 flex items-center justify-center bg-white shadow-md rounded-lg border border-gray-300 p-6 h-full">
+        <div className="flex-1 flex items-center justify-center bg-grey shadow-md rounded-lg border border-gray-300 p-6 h-full">
           {selectedCertificate ? (
             <div
               className="border bg-gradient-to-r bg-[#eb000c] border-gray-300 p-20 w-3/4 text-center rounded-lg shadow"
@@ -87,8 +88,8 @@ const CertificatesPage: React.FC = () => {
               <div className="flex justify-evenly mt-8">
                 <div className="flex flex-col items-center">
                   <hr className="border-t-2 border-black w-32 mb-2" />
-                  <p className="font-semibold text-gray-800">
-                    {selectedCertificate.instructor_name}
+                  <p className="font-semibold text-white">
+                    {selectedCertificate.instructor_name.toUpperCase()}
                   </p>
                   <p className="font-bold text-sm text-white">KURS SAHİBİ</p>
                 </div>
@@ -102,20 +103,20 @@ const CertificatesPage: React.FC = () => {
               </div>
             </div>
           ) : (
-            <p className="text-center text-3xl font-bold text-black">
+            <p className="text-center text-3xl font-bold text-white">
               Sertifika seçiniz.
             </p>
           )}
         </div>
 
         {/* Ders Listesi */}
-        <div className="w-full lg:w-64 bg-white shadow-md rounded-lg border border-gray-300 p-4 overflow-y-auto h-full">
+        <div className="w-full lg:w-64 bg-grey shadow-md rounded-lg border border-gray-300 p-4 overflow-y-auto h-full">
           {certificates.length > 0 ? (
             certificates.map((certificate, index) => (
               <div
                 key={index}
                 onClick={() => setSelectedCertificate(certificate)}
-                className="cursor-pointer p-4 bg-black border border-gray-300 mb-2 text-center text-white font-medium hover:shadow transition-all rounded text-ellipsis overflow-hidden whitespace-nowrap"
+                className="cursor-pointer p-4 bg-indigo-800 border border-gray-300 mb-2 text-center text-white font-medium hover:shadow transition-all rounded text-ellipsis overflow-hidden whitespace-nowrap"
               >
                 {certificate.course_title.toUpperCase()}
               </div>
