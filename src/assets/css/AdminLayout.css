@@ -13,14 +13,14 @@
 
 .admin-header {
   padding: 20px;
-  background-color: #333;
+  background-color: #374151;
   color: white;
   text-align: center;
 }
 
 .admin-main {
   padding: 20px;
-  background-color: #000000;
+  background-color: #1f2937;
   flex-grow: 1;
 }
 

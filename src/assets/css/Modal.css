@@ -11,7 +11,7 @@
 }
 
 .modal {
-  background-color: white;
+  background-color: #1f2937;
   padding: 20px;
   width: 500px;
   max-width: 100%;
@@ -32,6 +32,7 @@
   margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  background-color: #6c757d;
 }
 
 .modal-actions {

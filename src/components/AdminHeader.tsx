@@ -1,3 +1,5 @@
+import "@/assets/css/AdminHeader.css";
+
 import React from "react";
 
 type HeaderProps = {
@@ -11,6 +13,7 @@ const AdminHeader: React.FC<HeaderProps> = ({ title, onCreate, children }) => {
     <header className="admin-header">
       <div className="header-content">
         <h1>{title}</h1>
+        <br />
         {onCreate && (
           <button onClick={onCreate} className="create-btn">
             Create New

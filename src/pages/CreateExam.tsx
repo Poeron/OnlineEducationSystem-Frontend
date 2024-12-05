@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { post } from "@/services/ApiHelper";
-import Navbar from "../components/Navbar";
+import React, { useEffect, useState } from "react";
+import { get, post } from "@/services/ApiHelper";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Navbar from "../components/Navbar";
 import { Textarea } from "@/components/ui/textarea";
 import { useParams } from "react-router-dom";
 
@@ -89,6 +90,20 @@ const CreateExamPage: React.FC = () => {
       alert("Bir hata oluştu, lütfen tekrar deneyin.");
     }
   };
+
+  useEffect(() => {
+    const fetchExam = async () => {
+      try {
+        const examResponse = await get(`/Exams/course/${courseId}`);
+        setExamId(examResponse.exam_id);
+      } catch (error) {
+        console.error("Sınav getirilirken hata:", error);
+        alert("Bir hata oluştu, lütfen tekrar deneyin.");
+      }
+    };
+
+    fetchExam();
+  });
 
   return (
     <div>
