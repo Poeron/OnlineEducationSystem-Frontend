@@ -26,6 +26,7 @@ interface Assignment {
   description: string;
   due_date: string;
   submitted: boolean;
+  grade?: number;
 }
 
 interface DecodedToken {
@@ -71,9 +72,13 @@ const AssignmentsPage: React.FC = () => {
               (a: Assignment) => a.assignment_id === assignment.assignment_id
             );
             if (submittedAssignment) {
-              return { ...assignment, submitted: true };
+              return {
+                ...assignment,
+                submitted: true,
+                grade: submittedAssignment.grade,
+              };
             }
-            return { ...assignment, submitted: false };
+            return { ...assignment, submitted: false, grade: undefined };
           });
         }
         if (data) {

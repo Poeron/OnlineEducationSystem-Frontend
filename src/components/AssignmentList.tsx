@@ -1,5 +1,5 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
+import React from "react";
 
 interface Assignment {
   assignment_id: number;
@@ -9,6 +9,7 @@ interface Assignment {
   description: string;
   due_date: string;
   submitted: boolean;
+  grade?: number;
 }
 
 interface AssignmentListProps {
@@ -58,9 +59,15 @@ const AssignmentList: React.FC<AssignmentListProps> = ({
                 </Button>
               )}
               {assignment.submitted ? (
-                <span className="ml-4 text-green-500 font-semibold flex items-center gap-2">
-                  ✔ Teslim edildi
-                </span>
+                assignment.grade !== null ? (
+                  <span className="bg-green-500 text-white px-2 py-1 rounded-lg">
+                    NOTUNUZ: {assignment.grade}
+                  </span>
+                ) : (
+                  <span className="ml-4 text-green-500 font-semibold flex items-center gap-2">
+                    ✔ Teslim edildi
+                  </span>
+                )
               ) : (
                 <span className="ml-4 text-red-500 font-semibold flex items-center gap-2">
                   ✖ Teslim edilmedi
