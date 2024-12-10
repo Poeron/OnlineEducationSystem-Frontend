@@ -1,24 +1,26 @@
-import React from "react";
-import { Button } from "../components/ui/button";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from "../components/ui/card";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+
+import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import React from "react";
 
 interface LoginCardProps {
-  onSubmit: (e: React.FormEvent) => void;
-  register: any;
-  errors: any;
+  initialValues: { email: string; password: string };
+  validationSchema: any;
+  onSubmit: (values: { email: string; password: string }) => void;
 }
 
 const LoginCard: React.FC<LoginCardProps> = ({
+  initialValues,
+  validationSchema,
   onSubmit,
-  register,
-  errors,
 }) => {
   return (
     <Card className="w-[500px] relative bg-neutral-800 max-w-md text-white shadow-lg border border-black-600">
@@ -28,49 +30,62 @@ const LoginCard: React.FC<LoginCardProps> = ({
       </CardHeader>
 
       <CardContent>
-        <form onSubmit={onSubmit} className="space-y-6">
-          {/* Email Input */}
-          <div>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Enter your email"
-              {...register("email", { required: "Email is required" })}
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
+        >
+          {({ isValid, dirty }) => (
+            <Form className="space-y-6">
+              {/* Email Input */}
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Field
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  className="w-full p-2 border rounded"
+                  as={Input}
+                />
+                <ErrorMessage
+                  name="email"
+                  component="p"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
 
-          {/* Password Input */}
-          <div>
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              {...register("password", { required: "Password is required" })}
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
+              {/* Password Input */}
+              <div>
+                <Label htmlFor="password">Password</Label>
+                <Field
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  className="w-full p-2 border rounded"
+                  as={Input}
+                />
+                <ErrorMessage
+                  name="password"
+                  component="p"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
 
-          {/* Submit Button */}
-          <Button
-            variant={"destructive"}
-            size={"lg"}
-            type="submit"
-            className="w-full py-2 px-4"
-          >
-            Sign In
-          </Button>
-        </form>
+              {/* Submit Button */}
+              <Button
+                variant={"destructive"}
+                size={"lg"}
+                type="submit"
+                className="w-full py-2 px-4"
+                disabled={!(isValid && dirty)}
+              >
+                Sign In
+              </Button>
+            </Form>
+          )}
+        </Formik>
       </CardContent>
 
       <CardFooter>

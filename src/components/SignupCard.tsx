@@ -1,25 +1,36 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
-import { Button } from "../components/ui/button";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from "../components/ui/card";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+
+import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import React from "react";
 
 interface SignupCardProps {
-  onSubmit: (e: React.FormEvent) => void;
-  register: any;
-  errors: any;
+  initialValues: {
+    name: string;
+    email: string;
+    password: string;
+    role: string;
+  };
+  validationSchema: any;
+  onSubmit: (values: {
+    name: string;
+    email: string;
+    password: string;
+    role: string;
+  }) => void;
 }
 
 const SignupCard: React.FC<SignupCardProps> = ({
+  initialValues,
+  validationSchema,
   onSubmit,
-  register,
-  errors,
 }) => {
   return (
     <Card className="w-[500px] relative bg-neutral-800 max-w-md text-white shadow-lg">
@@ -29,91 +40,110 @@ const SignupCard: React.FC<SignupCardProps> = ({
       </CardHeader>
 
       <CardContent>
-        <form onSubmit={onSubmit} className="space-y-6">
-          {/* Name Input */}
-          <div>
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              type="text"
-              placeholder="Enter your name"
-              {...register("name", { required: "Name is required" })}
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-            )}
-          </div>
-
-          {/* Email Input */}
-          <div>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Enter your email"
-              {...register("email", { required: "Email is required" })}
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          {/* Password Input */}
-          <div>
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              {...register("password", {
-                required: "Password is required",
-              })}
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
-
-          {/* Role Selection (Radio Buttons) */}
-          <div>
-            <Label htmlFor="role">Select Your Role</Label>
-            <div className="flex items-center gap-4 mt-2">
-              <label className="flex items-center text-gray-400">
-                <input
-                  type="radio"
-                  value="student"
-                  {...register("role")}
-                  className="mr-2 accent-blue-500"
-                  defaultChecked
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
+        >
+          {({ isValid, dirty }) => (
+            <Form className="space-y-6">
+              {/* Name Input */}
+              <div>
+                <Label htmlFor="name">Name</Label>
+                <Field
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder="Enter your name"
+                  className="w-full p-2 border rounded"
+                  as={Input}
                 />
-                Student
-              </label>
-              <label className="flex items-center text-gray-400">
-                <input
-                  type="radio"
-                  value="instructor"
-                  {...register("role")}
-                  className="mr-2 accent-blue-500"
+                <ErrorMessage
+                  name="name"
+                  component="p"
+                  className="text-red-500 text-sm mt-1"
                 />
-                Instructor
-              </label>
-            </div>
-          </div>
+              </div>
 
-          {/* Submit Button */}
-          <Button
-            variant={"destructive"}
-            size={"lg"}
-            type="submit"
-            className="w-full py-2 px-4"
-          >
-            Sign Up
-          </Button>
-        </form>
+              {/* Email Input */}
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Field
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  className="w-full p-2 border rounded"
+                  as={Input}
+                />
+                <ErrorMessage
+                  name="email"
+                  component="p"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
+
+              {/* Password Input */}
+              <div>
+                <Label htmlFor="password">Password</Label>
+                <Field
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  className="w-full p-2 border rounded"
+                  as={Input}
+                />
+                <ErrorMessage
+                  name="password"
+                  component="p"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
+
+              {/* Role Selection (Radio Buttons) */}
+              <div>
+                <Label htmlFor="role">Select Your Role</Label>
+                <div className="flex items-center gap-4 mt-2">
+                  <label className="flex items-center text-gray-400">
+                    <Field
+                      type="radio"
+                      name="role"
+                      value="student"
+                      className="mr-2 accent-blue-500"
+                    />
+                    Student
+                  </label>
+                  <label className="flex items-center text-gray-400">
+                    <Field
+                      type="radio"
+                      name="role"
+                      value="instructor"
+                      className="mr-2 accent-blue-500"
+                    />
+                    Instructor
+                  </label>
+                </div>
+                <ErrorMessage
+                  name="role"
+                  component="p"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <Button
+                variant={"destructive"}
+                size={"lg"}
+                type="submit"
+                className="w-full py-2 px-4"
+                disabled={!(isValid && dirty)}
+              >
+                Sign Up
+              </Button>
+            </Form>
+          )}
+        </Formik>
       </CardContent>
 
       <CardFooter>

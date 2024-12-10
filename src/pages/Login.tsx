@@ -1,22 +1,14 @@
+import * as Yup from "yup";
+
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { post } from "../services/ApiHelper";
-import { useAuth } from "../hooks/useAuth";
+
 import LoginCard from "../components/LoginCard"; // LoginCard bileşenini import ediyoruz
 import { jwtDecode } from "jwt-decode";
-
-interface LoginFormValues {
-  email: string;
-  password: string;
-}
+import { post } from "../services/ApiHelper";
+import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormValues>();
   const navigate = useNavigate();
   const { login, token } = useAuth();
 
@@ -40,9 +32,25 @@ const Login: React.FC = () => {
     }
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
+  const initialValues = {
+    email: "",
+    password: "",
+  };
+
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .email("Geçersiz email adresi")
+      .max(50, "Email en fazla 50 karakter olmalı")
+      .required("Email gerekli"),
+    password: Yup.string()
+      .min(4, "Minimum 4 karakter olmalı")
+      .max(50, "Şifre en fazla 50 karakter olmalı")
+      .required("Şifre gerekli"),
+  });
+
+  const handleLogin = async (values: typeof initialValues) => {
     try {
-      const response = await post("/Auth/login", data);
+      const response = await post("/Auth/login", values);
 
       if (response.token) {
         login(response.token);
@@ -77,9 +85,9 @@ const Login: React.FC = () => {
 
         {/* Login Card */}
         <LoginCard
-          onSubmit={handleSubmit(onSubmit)}
-          register={register}
-          errors={errors}
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleLogin}
         />
       </div>
     </div>
