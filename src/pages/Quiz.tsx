@@ -34,12 +34,12 @@ const QuizPage: React.FC = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const exams = await get(`/Exams/course/${courseId}`);
-        if (!Array.isArray(exams) || exams.length === 0) {
+        const exam = await get(`/Exams/course/${courseId}`);
+        if (exam === null) {
           console.error("Sınav bulunamadı");
           return;
         }
-        const examId = exams[0].exam_id;
+        const examId = exam.exam_id;
         let examQuestions = await get(`/ExamQuestions/${examId}`);
         if (!Array.isArray(examQuestions)) {
           examQuestions = [examQuestions];

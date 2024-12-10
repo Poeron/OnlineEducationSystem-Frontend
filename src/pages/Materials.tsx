@@ -1,3 +1,5 @@
+import * as Yup from "yup";
+
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -8,6 +10,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -43,12 +46,6 @@ const Materials: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [userRole, setUserRole] = useState<string>("");
 
-  const [newMaterialTitle, setNewMaterialTitle] = useState<string>("");
-  const [newMaterialContentType, setNewMaterialContentType] =
-    useState<string>("");
-  const [newMaterialContentUrl, setNewMaterialContentUrl] =
-    useState<string>("");
-
   useEffect(() => {
     const fetchUserRole = () => {
       const token = localStorage.getItem("token");
@@ -73,13 +70,31 @@ const Materials: React.FC = () => {
     fetchMaterials();
   }, [courseId]);
 
-  const handleAddMaterial = async () => {
+  const validationSchema = Yup.object({
+    title: Yup.string()
+      .min(3, "Materyal başlığı en az 3 karakter olmalıdır")
+      .max(50, "Materyal başlığı en fazla 50 karakter olmalıdır")
+      .required("Materyal başlığı gerekli"),
+    content_type: Yup.string()
+      .max(50, "Dosya türü en fazla 50 karakter olmalıdır")
+      .required("Dosya türü gerekli"),
+    content_url: Yup.string()
+      .url("Geçerli bir URL girin")
+      .max(255, "İçerik URL en fazla 255 karakter olmalıdır")
+      .required("İçerik URL gerekli"),
+  });
+
+  const handleAddMaterial = async (values: {
+    title: string;
+    content_type: string;
+    content_url: string;
+  }) => {
     try {
       const newMaterial = {
         course_id: courseId,
-        title: newMaterialTitle,
-        content_type: newMaterialContentType,
-        content_url: newMaterialContentUrl,
+        title: values.title,
+        content_type: values.content_type,
+        content_url: values.content_url,
       };
 
       await post("/CourseMaterials", newMaterial);
@@ -101,10 +116,10 @@ const Materials: React.FC = () => {
         <h1 className="text-4xl font-extrabold text-center mb-8 text-white">
           Materyaller - Kurs ID: {courseId}
         </h1>
-        <div className="rounded-2xl border border-white  shadow-xl">
+        <div className="rounded-2xl border border-white shadow-xl">
           <Table className="w-full rounded-lg">
             <TableHeader>
-              <TableRow className=" text-gray-200">
+              <TableRow className="text-gray-200">
                 <TableHead className="text-left px-4 py-3">Ad</TableHead>
                 <TableHead className="text-left px-4 py-3">
                   Değiştirme Tarihi
@@ -170,34 +185,71 @@ const Materials: React.FC = () => {
                     Lütfen yeni materyal için gerekli bilgileri girin.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
-                <div className="flex flex-col gap-4">
-                  <Input
-                    placeholder="Materyal Başlığı"
-                    value={newMaterialTitle}
-                    onChange={(e) => setNewMaterialTitle(e.target.value)}
-                  />
-                  <Input
-                    placeholder="Dosya Türü (örn: PDF, Video)"
-                    value={newMaterialContentType}
-                    onChange={(e) => setNewMaterialContentType(e.target.value)}
-                  />
-                  <Input
-                    placeholder="İçerik URL"
-                    value={newMaterialContentUrl}
-                    onChange={(e) => setNewMaterialContentUrl(e.target.value)}
-                  />
-                </div>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-gray-300 text-black py-2 px-4 rounded">
-                    İptal
-                  </AlertDialogCancel>
-                  <Button
-                    onClick={handleAddMaterial}
-                    className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-                  >
-                    Materyal Ekle
-                  </Button>
-                </AlertDialogFooter>
+                <Formik
+                  initialValues={{
+                    title: "",
+                    content_type: "",
+                    content_url: "",
+                  }}
+                  validationSchema={validationSchema}
+                  onSubmit={handleAddMaterial}
+                >
+                  {({ isValid, dirty }) => (
+                    <Form className="flex flex-col gap-4">
+                      <div>
+                        <Field
+                          name="title"
+                          placeholder="Materyal Başlığı"
+                          className="w-full p-2 border rounded"
+                          as={Input}
+                        />
+                        <ErrorMessage
+                          name="title"
+                          component="p"
+                          className="text-red-500 text-sm mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Field
+                          name="content_type"
+                          placeholder="Dosya Türü (örn: PDF, Video)"
+                          className="w-full p-2 border rounded"
+                          as={Input}
+                        />
+                        <ErrorMessage
+                          name="content_type"
+                          component="p"
+                          className="text-red-500 text-sm mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Field
+                          name="content_url"
+                          placeholder="İçerik URL"
+                          className="w-full p-2 border rounded"
+                          as={Input}
+                        />
+                        <ErrorMessage
+                          name="content_url"
+                          component="p"
+                          className="text-red-500 text-sm mt-1"
+                        />
+                      </div>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-gray-300 text-black py-2 px-4 rounded">
+                          İptal
+                        </AlertDialogCancel>
+                        <Button
+                          type="submit"
+                          disabled={!(isValid && dirty)}
+                          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        >
+                          Materyal Ekle
+                        </Button>
+                      </AlertDialogFooter>
+                    </Form>
+                  )}
+                </Formik>
               </AlertDialogContent>
             </AlertDialog>
           </div>

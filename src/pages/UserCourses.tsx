@@ -1,3 +1,5 @@
+import * as Yup from "yup";
+
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -8,6 +10,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { get, post } from "@/services/ApiHelper";
 
@@ -31,8 +34,6 @@ const Courses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [userRole, setUserRole] = useState<string>("");
-  const [newCourseTitle, setNewCourseTitle] = useState<string>("");
-  const [newCourseDescription, setNewCourseDescription] = useState<string>("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -61,7 +62,10 @@ const Courses: React.FC = () => {
     getCourses();
   }, []);
 
-  const handleAddCourse = async () => {
+  const handleAddCourse = async (values: {
+    title: string;
+    description: string;
+  }) => {
     try {
       const token = localStorage.getItem("token");
       if (token) {
@@ -70,8 +74,8 @@ const Courses: React.FC = () => {
 
         const newCourse = {
           instructor_id: userId,
-          title: newCourseTitle,
-          description: newCourseDescription,
+          title: values.title,
+          description: values.description,
         };
 
         await post("/Courses", newCourse);
@@ -83,6 +87,17 @@ const Courses: React.FC = () => {
       alert("Kurs eklenemedi. Lütfen tekrar deneyin.");
     }
   };
+
+  const validationSchema = Yup.object({
+    title: Yup.string()
+      .min(3, "Kurs başlığı en az 3 karakter olmalıdır")
+      .max(50, "Kurs başlığı en fazla 50 karakter olmalıdır")
+      .required("Kurs başlığı gerekli"),
+    description: Yup.string()
+      .min(10, "Kurs açıklaması en az 10 karakter olmalıdır")
+      .max(500, "Kurs açıklaması en fazla 500 karakter olmalıdır")
+      .required("Kurs açıklaması gerekli"),
+  });
 
   if (loading) {
     return (
@@ -115,29 +130,54 @@ const Courses: React.FC = () => {
                     Lütfen yeni kursun başlığını ve açıklamasını girin.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
-                <div className="flex flex-col gap-4">
-                  <Input
-                    placeholder="Kurs Başlığı"
-                    value={newCourseTitle}
-                    onChange={(e) => setNewCourseTitle(e.target.value)}
-                  />
-                  <Textarea
-                    placeholder="Kurs Açıklaması"
-                    value={newCourseDescription}
-                    onChange={(e) => setNewCourseDescription(e.target.value)}
-                  />
-                </div>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-gray-300 text-black">
-                    İptal
-                  </AlertDialogCancel>
-                  <Button
-                    onClick={handleAddCourse}
-                    className="bg-blue-500 text-white hover:bg-blue-700 transition-all"
-                  >
-                    Kurs Ekle
-                  </Button>
-                </AlertDialogFooter>
+                <Formik
+                  initialValues={{ title: "", description: "" }}
+                  validationSchema={validationSchema}
+                  onSubmit={handleAddCourse}
+                >
+                  {({ isValid, dirty }) => (
+                    <Form className="flex flex-col gap-4">
+                      <div>
+                        <Field
+                          name="title"
+                          placeholder="Kurs Başlığı"
+                          className="w-full p-2 border rounded"
+                          as={Input}
+                        />
+                        <ErrorMessage
+                          name="title"
+                          component="p"
+                          className="text-red-500 text-sm mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Field
+                          name="description"
+                          placeholder="Kurs Açıklaması"
+                          className="w-full p-2 border rounded"
+                          as={Textarea}
+                        />
+                        <ErrorMessage
+                          name="description"
+                          component="p"
+                          className="text-red-500 text-sm mt-1"
+                        />
+                      </div>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-gray-300 text-black">
+                          İptal
+                        </AlertDialogCancel>
+                        <Button
+                          type="submit"
+                          disabled={!(isValid && dirty)}
+                          className="bg-blue-500 text-white hover:bg-blue-700 transition-all disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        >
+                          Kurs Ekle
+                        </Button>
+                      </AlertDialogFooter>
+                    </Form>
+                  )}
+                </Formik>
               </AlertDialogContent>
             </AlertDialog>
           </div>

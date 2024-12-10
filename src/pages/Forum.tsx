@@ -153,7 +153,7 @@ const Forum: React.FC = () => {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Mesajınızı yazın..."
-            className="flex-1 p-4 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 "
+            className="flex-1 p-4 border rounded-lg text-white focus:outline-none focus:ring-2 "
           />
           <Button
             className="ml-4 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-all"

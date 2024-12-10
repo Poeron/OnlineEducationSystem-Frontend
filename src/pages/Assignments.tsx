@@ -1,3 +1,5 @@
+import * as Yup from "yup";
+
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -8,6 +10,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { get, post } from "@/services/ApiHelper";
 import { useNavigate, useParams } from "react-router-dom";
@@ -19,7 +22,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { jwtDecode } from "jwt-decode";
 
 interface Assignment {
-  assignment_id: number; // Benzersiz ödev ID'si
+  assignment_id: number;
   course_id: number;
   course_name: string;
   title: string;
@@ -40,11 +43,6 @@ const AssignmentsPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string>("");
-  const [newAssignmentTitle, setNewAssignmentTitle] = useState<string>("");
-  const [newAssignmentDescription, setNewAssignmentDescription] =
-    useState<string>("");
-  const [newAssignmentDueDate, setNewAssignmentDueDate] = useState<string>("");
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,7 +62,6 @@ const AssignmentsPage: React.FC = () => {
           if (courseId) {
             data = await get(`/Assignments/Courses/${courseId}`);
           } else {
-            // Genel ödevleri getir
             data = await get(`/Assignments/student/${studentId}`);
           }
           data = data.map((assignment: Assignment) => {
@@ -95,13 +92,35 @@ const AssignmentsPage: React.FC = () => {
     fetchAssignments();
   }, [courseId]);
 
-  const handleAddAssignment = async () => {
+  const validationSchema = Yup.object({
+    title: Yup.string()
+      .min(3, "Ödev başlığı en az 3 karakter olmalıdır")
+      .max(50, "Ödev başlığı en fazla 50 karakter olmalıdır")
+      .required("Ödev başlığı gerekli"),
+    description: Yup.string()
+      .min(10, "Ödev açıklaması en az 10 karakter olmalıdır")
+      .max(255, "Ödev açıklaması en fazla 255 karakter olmalıdır")
+      .required("Ödev açıklaması gerekli"),
+    due_date: Yup.date()
+      .min(new Date(), "Son teslim tarihi bugünden sonraki bir tarih olmalıdır")
+      .max(
+        new Date(new Date().getFullYear() + 1, 11, 31),
+        "Son teslim tarihi en fazla bir yıl sonrası olabilir"
+      )
+      .required("Son teslim tarihi gerekli"),
+  });
+
+  const handleAddAssignment = async (values: {
+    title: string;
+    description: string;
+    due_date: string;
+  }) => {
     try {
       const newAssignment = {
         course_id: parseInt(courseId!),
-        title: newAssignmentTitle,
-        description: newAssignmentDescription,
-        due_date: newAssignmentDueDate,
+        title: values.title,
+        description: values.description,
+        due_date: values.due_date,
       };
 
       await post("/Assignments", newAssignment);
@@ -154,46 +173,76 @@ const AssignmentsPage: React.FC = () => {
                     tarihini girin.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
-                <div className="flex flex-col gap-4">
-                  <Input
-                    placeholder="Ödev Başlığı"
-                    value={newAssignmentTitle}
-                    onChange={(e) => setNewAssignmentTitle(e.target.value)}
-                    className="bg-gray-700 text-white border border-gray-600 rounded focus:ring-2 focus:ring-blue-500"
-                  />
-                  <Textarea
-                    placeholder="Ödev Açıklaması"
-                    value={newAssignmentDescription}
-                    onChange={(e) =>
-                      setNewAssignmentDescription(e.target.value)
-                    }
-                    className="bg-gray-700 text-white border border-gray-600 rounded focus:ring-2 focus:ring-blue-500"
-                  />
-                  <Input
-                    type="date"
-                    value={newAssignmentDueDate}
-                    min={new Date().toISOString().split("T")[0]}
-                    onChange={(e) => setNewAssignmentDueDate(e.target.value)}
-                    className="bg-gray-700 text-white border border-gray-600 rounded focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-gray-300 text-black py-2 px-4 rounded hover:bg-gray-400">
-                    İptal
-                  </AlertDialogCancel>
-                  <Button
-                    onClick={handleAddAssignment}
-                    className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-all"
-                  >
-                    Ödev Ekle
-                  </Button>
-                </AlertDialogFooter>
+                <Formik
+                  initialValues={{
+                    title: "",
+                    description: "",
+                    due_date: "",
+                  }}
+                  validationSchema={validationSchema}
+                  onSubmit={handleAddAssignment}
+                >
+                  {({ isValid, dirty }) => (
+                    <Form className="flex flex-col gap-4">
+                      <div>
+                        <Field
+                          name="title"
+                          placeholder="Ödev Başlığı"
+                          className="bg-gray-700 text-white border border-gray-600 rounded focus:ring-2 focus:ring-blue-500"
+                          as={Input}
+                        />
+                        <ErrorMessage
+                          name="title"
+                          component="p"
+                          className="text-red-500 text-sm mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Field
+                          name="description"
+                          placeholder="Ödev Açıklaması"
+                          className="bg-gray-700 text-white border border-gray-600 rounded focus:ring-2 focus:ring-blue-500"
+                          as={Textarea}
+                        />
+                        <ErrorMessage
+                          name="description"
+                          component="p"
+                          className="text-red-500 text-sm mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Field
+                          name="due_date"
+                          type="date"
+                          className="bg-gray-700 text-white border border-gray-600 rounded focus:ring-2 focus:ring-blue-500"
+                          as={Input}
+                        />
+                        <ErrorMessage
+                          name="due_date"
+                          component="p"
+                          className="text-red-500 text-sm mt-1"
+                        />
+                      </div>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-gray-300 text-black py-2 px-4 rounded hover:bg-gray-400">
+                          İptal
+                        </AlertDialogCancel>
+                        <Button
+                          type="submit"
+                          disabled={!(isValid && dirty)}
+                          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-all disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        >
+                          Ödev Ekle
+                        </Button>
+                      </AlertDialogFooter>
+                    </Form>
+                  )}
+                </Formik>
               </AlertDialogContent>
             </AlertDialog>
           </div>
         )}
 
-        {/* Ödev Listesi */}
         <AssignmentList
           assignments={assignments}
           onAssignmentClick={handleAssignmentClick}

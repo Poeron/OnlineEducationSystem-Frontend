@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import React from "react";
+import { jwtDecode } from "jwt-decode";
 
 interface Assignment {
   assignment_id: number;
@@ -12,6 +13,10 @@ interface Assignment {
   grade?: number;
 }
 
+interface JwtPayload {
+  role: string;
+}
+
 interface AssignmentListProps {
   assignments: Assignment[];
   onAssignmentClick: (courseId: number) => void;
@@ -21,6 +26,10 @@ const AssignmentList: React.FC<AssignmentListProps> = ({
   assignments,
   onAssignmentClick,
 }) => {
+  const token = localStorage.getItem("token");
+  const decodedToken: JwtPayload = jwtDecode(token!);
+  const role = decodedToken.role;
+
   return (
     <div className="w-full max-w-4xl space-y-6">
       {assignments.map((assignment) => {
@@ -69,9 +78,11 @@ const AssignmentList: React.FC<AssignmentListProps> = ({
                   </span>
                 )
               ) : (
-                <span className="ml-4 text-red-500 font-semibold flex items-center gap-2">
-                  ✖ Teslim edilmedi
-                </span>
+                role === "student" && (
+                  <span className="ml-4 text-red-500 font-semibold flex items-center gap-2">
+                    ✖ Teslim edilmedi
+                  </span>
+                )
               )}
             </div>
           </div>
