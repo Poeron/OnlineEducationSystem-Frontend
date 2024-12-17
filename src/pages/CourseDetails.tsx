@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { get, remove } from "@/services/ApiHelper";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
-import { get } from "@/services/ApiHelper";
 import { jwtDecode } from "jwt-decode";
 
 interface Course {
@@ -10,6 +10,7 @@ interface Course {
   title: string;
   description: string;
 }
+
 interface DecodedToken {
   user_id: string;
   role: string;
@@ -59,6 +60,17 @@ const CourseDetails: React.FC = () => {
 
     fetchCourse();
   }, [courseId]);
+
+  const handleLeaveCourse = async () => {
+    try {
+      await remove(`/CourseEnrollments/course/${courseId}`);
+      alert("Kurstan başarıyla ayrıldınız.");
+      navigate("/student/mycourses");
+    } catch (error) {
+      console.error("Kurstan ayrılırken hata oluştu:", error);
+      alert("Kurstan ayrılırken bir hata oluştu. Lütfen tekrar deneyin.");
+    }
+  };
 
   if (loading) {
     return (
@@ -123,6 +135,14 @@ const CourseDetails: React.FC = () => {
               }
             >
               Öğrenciler
+            </Button>
+          )}
+          {userRole === "student" && (
+            <Button
+              className="btn-shared btn-red py-8 px-4"
+              onClick={handleLeaveCourse}
+            >
+              Kurstan Ayrıl
             </Button>
           )}
         </div>
