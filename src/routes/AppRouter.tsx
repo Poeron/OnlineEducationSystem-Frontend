@@ -15,6 +15,7 @@ import AdminLayout from "@/layouts/AdminLayout";
 import AdminQuestionOptions from "@/pages/admin/QuestionOptions";
 import AdminUsers from "@/pages/admin/Users";
 import AllCourses from "@/pages/AllCourses";
+import Archive from "@/pages/admin/Archive";
 import AssignmentDetails from "@/pages/AssignmentDetails";
 import Assignments from "@/pages/Assignments";
 import Certificates from "@/pages/Certificates";
@@ -126,6 +127,7 @@ const AppRouter: React.FC = () => {
               <AdminLayout>
                 <Routes>
                   <Route path="/" element={<AdminHome />} />
+                  <Route path="archive" element={<Archive />} />
                   <Route path="home" element={<AdminHome />} />
                   <Route path="users" element={<AdminUsers />} />
                   <Route path="courses" element={<AdminCourses />} />
