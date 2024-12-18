@@ -62,6 +62,9 @@ const Sidebar = () => {
               Question Options
             </a>
           </li>
+          <li>
+            <a onClick={() => navigate("/admin/archive")}>Archive</a>
+          </li>
         </ul>
         <button onClick={logout} className="px-4 py-2 bg-red-600 rounded">
           Çıkış Yap
