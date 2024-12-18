@@ -34,33 +34,43 @@ const Courses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [userRole, setUserRole] = useState<string>("");
+  const [filter, setFilter] = useState<"active" | "inactive">("active"); // Aktif/pasif filtre
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const getCourses = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (token) {
-          const decodedToken: DecodedToken = jwtDecode(token);
-          const userId = decodedToken.user_id;
-          setUserRole(decodedToken.role);
+  const fetchCourses = async (filter: "active" | "inactive") => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken: DecodedToken = jwtDecode(token);
+        const userId = decodedToken.user_id;
+        setUserRole(decodedToken.role);
 
-          if (decodedToken.role === "instructor") {
-            const userCoursesData = await get(`/Courses/instructor/${userId}`);
-            setCourses(userCoursesData);
-          } else if (decodedToken.role === "student") {
-            const userCoursesData = await get(`/Courses/student/${userId}`);
-            setCourses(userCoursesData);
-          }
+        let endpoint = "";
+        if (decodedToken.role === "instructor") {
+          endpoint = `/Courses/instructor/${userId}`;
+        } else if (decodedToken.role === "student") {
+          endpoint = `/Courses/student/${userId}`;
         }
-      } catch (error) {
-        console.error("Kurslar yüklenirken hata oluştu:", error);
-      } finally {
-        setLoading(false);
+
+        // Pasif kurslar için endpointin sonuna /passive ekle
+        if (filter === "inactive") {
+          endpoint += "/passive";
+        }
+
+        const userCoursesData = await get(endpoint);
+        setCourses(userCoursesData);
       }
-    };
-    getCourses();
-  }, []);
+    } catch (error) {
+      console.error("Kurslar yüklenirken hata oluştu:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCourses(filter); // Filtreye göre kursları getir
+  }, [filter]);
 
   const handleAddCourse = async (values: {
     title: string;
@@ -182,13 +192,37 @@ const Courses: React.FC = () => {
             </AlertDialog>
           </div>
         )}
+        {/* Filtre Butonları */}
+        <div className="flex gap-4 mb-6">
+          <Button
+            className={`p-2 ${
+              filter === "active" ? "bg-blue-500" : "bg-gray-400"
+            }`}
+            onClick={() => setFilter("active")}
+          >
+            Aktif Kurslarım
+          </Button>
+          <Button
+            className={`p-2 ${
+              filter === "inactive" ? "bg-blue-500" : "bg-gray-400"
+            }`}
+            onClick={() => setFilter("inactive")}
+          >
+            Pasif Kurslarım
+          </Button>
+        </div>
         {courses.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
             {courses.map((course) => (
               <div
                 key={course.course_id}
-                className="flex flex-col items-center justify-center h-40 w-64 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg shadow-md hover:shadow-xl transition-transform transform hover:scale-105 p-4 cursor-pointer"
+                className={`flex flex-col items-center justify-center h-40 w-64 text-white rounded-lg shadow-md transition-transform transform hover:scale-105 p-4 cursor-pointer ${
+                  filter === "inactive"
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-gradient-to-r from-blue-500 to-purple-500 hover:shadow-xl"
+                }`}
                 onClick={() =>
+                  filter === "active" &&
                   navigate(`/${userRole}/courses/${course.course_id}`)
                 }
               >
@@ -198,20 +232,8 @@ const Courses: React.FC = () => {
               </div>
             ))}
           </div>
-        ) : userRole === "student" ? (
-          <div className="text-center">
-            <h1 className="text-4xl font-bold  mb-4 text-gray-800">
-              Hiçbir kursa katılmadın, katılmak için tıkla
-            </h1>
-            <Button
-              className="p-4 bg-green-500 text-white rounded-lg shadow-lg hover:shadow-xl transition-all"
-              onClick={() => navigate("/student/allcourses")}
-            >
-              Kurslara Göz At
-            </Button>
-          </div>
         ) : (
-          <p className="text-white text-xl">Henüz kurs eklenmedi.</p>
+          <p className="text-white text-xl">Hiç kurs bulunamadı.</p>
         )}
       </div>
     </div>
