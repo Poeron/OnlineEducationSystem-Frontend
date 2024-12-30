@@ -24,7 +24,7 @@ import CourseRegistration from "@/pages/CourseRegistration";
 import CourseStudents from "@/pages/CourseStudents";
 import Forum from "@/pages/Forum";
 import Home from "../pages/Home";
-import InstructorCourses from "@/pages/Forum";
+import InstructorCourses from "@/pages/UserCourses";
 import InstructorQuiz from "@/pages/CreateExam";
 import Login from "../pages/Login";
 import Materials from "@/pages/Materials";
@@ -89,7 +89,7 @@ const AppRouter: React.FC = () => {
             <ProtectedRoute role="instructor">
               <UserLayout>
                 <Routes>
-                  <Route path="home" element={<MyCourses />} />
+                  <Route path="home" element={<InstructorCourses />} />
                   <Route path="courses" element={<InstructorCourses />} />
                   <Route path="courses/:courseId" element={<CourseDetails />} />
                   <Route

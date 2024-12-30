@@ -44,7 +44,6 @@ const CreateExamPage: React.FC = () => {
       setQuestions(questions);
     } catch (error) {
       console.error("Sınav getirilirken hata:", error);
-      alert("Bir hata oluştu, lütfen tekrar deneyin.");
     }
   };
 

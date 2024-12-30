@@ -75,9 +75,30 @@ const QuizPage: React.FC = () => {
           score: (points / questions.length) * 100,
         };
         await post("/ExamResults", data);
+        if ((points / questions.length) * 100 >= 50) {
+          console.log("Sınavı geçtiniz, sertifika oluşturuluyor...");
+          await CreateCertificate();
+        }
       }
     } catch (error) {
       console.error("Sonuç gönderilirken hata oluştu:", error);
+    }
+  };
+
+  const CreateCertificate = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken: DecodedToken = jwtDecode(token);
+        const studentId = decodedToken.user_id;
+        const data = {
+          student_id: parseInt(studentId),
+          course_id: parseInt(courseId!),
+        };
+        await post("/Certificates", data);
+      }
+    } catch (error) {
+      console.error("Sertifika oluşturulurken hata oluştu:", error);
     }
   };
 

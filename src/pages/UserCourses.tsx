@@ -193,24 +193,27 @@ const Courses: React.FC = () => {
           </div>
         )}
         {/* Filtre Butonları */}
-        <div className="flex gap-4 mb-6">
-          <Button
-            className={`p-2 ${
-              filter === "active" ? "bg-blue-500" : "bg-gray-400"
-            }`}
-            onClick={() => setFilter("active")}
-          >
-            Aktif Kurslarım
-          </Button>
-          <Button
-            className={`p-2 ${
-              filter === "inactive" ? "bg-blue-500" : "bg-gray-400"
-            }`}
-            onClick={() => setFilter("inactive")}
-          >
-            Pasif Kurslarım
-          </Button>
-        </div>
+        {userRole === "student" && (
+          <div className="flex gap-4 mb-6">
+            <Button
+              className={`p-2 ${
+                filter === "active" ? "bg-blue-500" : "bg-gray-400"
+              }`}
+              onClick={() => setFilter("active")}
+            >
+              Aktif Kurslarım
+            </Button>
+            <Button
+              className={`p-2 ${
+                filter === "inactive" ? "bg-blue-500" : "bg-gray-400"
+              }`}
+              onClick={() => setFilter("inactive")}
+            >
+              Pasif Kurslarım
+            </Button>
+          </div>
+        )}
+
         {courses.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
             {courses.map((course) => (
