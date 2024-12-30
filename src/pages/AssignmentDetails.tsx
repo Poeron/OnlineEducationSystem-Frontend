@@ -44,8 +44,18 @@ const AssignmentPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string>("");
+  const [isExpired, setIsExpired] = useState<boolean>(false);
 
   const [grades, setGrades] = useState<{ [key: number]: number }>({});
+
+  const checkDueDate = (dueDate: Date) => {
+    const currentDate = new Date();
+    console.log(currentDate, dueDate);
+
+    if (currentDate > dueDate) {
+      setIsExpired(true);
+    }
+  };
 
   useEffect(() => {
     const fetchAssignment = async () => {
@@ -54,6 +64,7 @@ const AssignmentPage: React.FC = () => {
         const data = await get(`/Assignments/${assignmentId}`);
         if (data) {
           setAssignmentData(data);
+          checkDueDate(new Date(data.due_date));
         } else {
           setError("Bu kurs için ödev bulunmamaktadır.");
         }
@@ -200,9 +211,9 @@ const AssignmentPage: React.FC = () => {
                   !file && "opacity-50 cursor-not-allowed"
                 }`}
                 onClick={handleSubmit}
-                disabled={!file}
+                disabled={!file || isExpired}
               >
-                Teslim Et
+                {isExpired ? "Süre doldu" : "Ödevi Teslim Et"}
               </Button>
             </div>
           ) : (
