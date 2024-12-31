@@ -11,6 +11,7 @@ interface Message {
   comment_text: string;
   created_at: string;
   author_name: string;
+  author_id: number;
 }
 
 interface Course {
@@ -30,6 +31,9 @@ const Forum: React.FC = () => {
   const [newMessage, setNewMessage] = useState<string>("");
   const [course, setCourse] = useState<Course | null>(null);
   const [userRole, setUserRole] = useState<string>("");
+  const token = localStorage.getItem("token");
+  const decodedToken: DecodedToken = jwtDecode(token!);
+  const user_id = parseInt(decodedToken.user_id);
 
   const fetchMessages = useCallback(async () => {
     try {
@@ -132,14 +136,15 @@ const Forum: React.FC = () => {
                   <span className="text-sm text-gray-500 mb-2">
                     {formattedDate}
                   </span>
-                  {userRole === "instructor" && (
-                    <button
-                      className="text-red-500 hover:text-red-700 p-2 rounded focus:outline-none transition-colors"
-                      onClick={() => handleDeleteMessage(message.comment_id)}
-                    >
-                      <FaTrashAlt className="w-5 h-5" />
-                    </button>
-                  )}
+                  {userRole === "instructor" ||
+                    (user_id === message.author_id && (
+                      <button
+                        className="text-red-500 hover:text-red-700 p-2 rounded focus:outline-none transition-colors"
+                        onClick={() => handleDeleteMessage(message.comment_id)}
+                      >
+                        <FaTrashAlt className="w-5 h-5" />
+                      </button>
+                    ))}
                 </div>
               </div>
             );

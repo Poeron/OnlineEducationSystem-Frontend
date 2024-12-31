@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { get, remove } from "@/services/ApiHelper";
+import { get, post, remove } from "@/services/ApiHelper";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,8 @@ const CourseDetails: React.FC = () => {
   const [hasExamResult, setHasExamResult] = useState<boolean>(false);
   const [result, setResult] = useState<number>(0);
   const [userRole, setUserRole] = useState<string>("");
+  const [showWarning, setShowWarning] = useState<boolean>(false);
+  const [exam_id, setExamId] = useState<number>(0);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -43,6 +45,12 @@ const CourseDetails: React.FC = () => {
           const studentId = parseInt(decodedToken.user_id);
           setUserRole(decodedToken.role);
 
+          const exam = await get(`/Exams/course_exam/${courseId}`);
+          if (exam) {
+            setExamId(exam.exam_id);
+            console.log("exam id :", exam.exam_id);
+          }
+
           const examResults = await get(
             `/ExamResults/course/${courseId}/student/${studentId}`
           );
@@ -52,7 +60,7 @@ const CourseDetails: React.FC = () => {
           }
         }
       } catch (error) {
-        console.error("Kurs bilgileri yüklenirken hata oluştu:", error);
+        console.error("Öğrenci sınava katılım göstermemiş.", error);
       } finally {
         setLoading(false);
       }
@@ -70,6 +78,36 @@ const CourseDetails: React.FC = () => {
       console.error("Kurstan ayrılırken hata oluştu:", error);
       alert("Kurstan ayrılırken bir hata oluştu. Lütfen tekrar deneyin.");
     }
+  };
+
+  const handleQuizWarning = () => {
+    setShowWarning(true);
+  };
+
+  const handleWarningAccept = () => {
+    setShowWarning(false);
+    navigate(`/${userRole}/courses/${courseId}/quiz`);
+    handleExamStart();
+  };
+  const handleExamStart = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken: DecodedToken = jwtDecode(token);
+        const studentId = decodedToken.user_id;
+        const data = {
+          student_id: parseInt(studentId),
+          exam_id: exam_id,
+          score: 0,
+        };
+        await post("/ExamResults", data);
+      }
+    } catch (error) {
+      console.error("Sonuç gönderilirken hata oluştu:", error);
+    }
+  };
+  const handleWarningDecline = () => {
+    setShowWarning(false);
   };
 
   if (loading) {
@@ -110,13 +148,7 @@ const CourseDetails: React.FC = () => {
             className={`btn-shared btn-hover py-8 px-4 ${
               hasExamResult ? "btn-purple" : "btn-yellow"
             }`}
-            onClick={() =>
-              navigate(
-                hasExamResult
-                  ? `/${userRole}/courses/${courseId}/exam-result`
-                  : `/${userRole}/courses/${courseId}/quiz`
-              )
-            }
+            onClick={handleQuizWarning}
             disabled={hasExamResult}
           >
             {hasExamResult ? `Sınav Sonucunuz: ${result}` : "Sınavlar"}
@@ -147,6 +179,32 @@ const CourseDetails: React.FC = () => {
           )}
         </div>
       </div>
+
+      {showWarning && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-[#242424] p-6 rounded-lg shadow-lg max-w-lg text-center">
+            <h1 className="text-2xl font-bold mb-4">Dikkat!</h1>
+            <p className="mb-6">
+              Sınava başladıktan sonra sayfadan çıkarsanız, ilerleyemezsiniz.
+              Devam etmek istediğinizden emin misiniz?
+            </p>
+            <div className="flex justify-center gap-4">
+              <Button
+                className="p-4 bg-green-500 text-white rounded"
+                onClick={handleWarningAccept}
+              >
+                Devam Et
+              </Button>
+              <Button
+                className="p-4 bg-red-500 text-white rounded"
+                onClick={handleWarningDecline}
+              >
+                İptal
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

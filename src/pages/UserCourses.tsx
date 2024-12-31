@@ -31,6 +31,8 @@ interface DecodedToken {
 }
 
 const Courses: React.FC = () => {
+  const [activecourses, setActiveCourses] = useState<Course[]>([]);
+  const [inactivecourses, setInactiveCourses] = useState<Course[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [userRole, setUserRole] = useState<string>("");
@@ -53,13 +55,21 @@ const Courses: React.FC = () => {
           endpoint = `/Courses/student/${userId}`;
         }
 
-        // Pasif kurslar için endpointin sonuna /passive ekle
+        const userCoursesData = await get(endpoint);
+        setActiveCourses(userCoursesData);
+
         if (filter === "inactive") {
           endpoint += "/passive";
+          const userCoursesData = await get(endpoint);
+          // compare active and inactive courses and filter out the inactive ones
+          const inactiveCourses = userCoursesData.filter(
+            (course: Course) =>
+              !activecourses.some(
+                (activeCourse) => activeCourse.course_id === course.course_id
+              )
+          );
+          setInactiveCourses(inactiveCourses);
         }
-
-        const userCoursesData = await get(endpoint);
-        setCourses(userCoursesData);
       }
     } catch (error) {
       console.error("Kurslar yüklenirken hata oluştu:", error);
@@ -71,6 +81,14 @@ const Courses: React.FC = () => {
   useEffect(() => {
     fetchCourses(filter); // Filtreye göre kursları getir
   }, [filter]);
+
+  useEffect(() => {
+    if (filter === "active") {
+      setCourses(activecourses);
+    } else if (filter === "inactive") {
+      setCourses(inactivecourses);
+    }
+  }, [filter, activecourses, inactivecourses]);
 
   const handleAddCourse = async (values: {
     title: string;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { get, post } from "@/services/ApiHelper";
+import { get, patch, post } from "@/services/ApiHelper";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,8 @@ const QuizPage: React.FC = () => {
 
   const navigate = useNavigate();
   const { courseId } = useParams<{ courseId: string }>();
+
+  window.history.pushState(null, document.title, location.pathname);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -74,7 +76,7 @@ const QuizPage: React.FC = () => {
           exam_id: questions[0].exam_id,
           score: (points / questions.length) * 100,
         };
-        await post("/ExamResults", data);
+        await patch("/ExamResults", data);
         if ((points / questions.length) * 100 >= 50) {
           console.log("Sınavı geçtiniz, sertifika oluşturuluyor...");
           await CreateCertificate();

@@ -10,6 +10,7 @@ type User = {
   name: string;
   email: string;
   role: string;
+  password: string;
 };
 
 const AdminUsers: React.FC = () => {
@@ -73,6 +74,7 @@ const AdminUsers: React.FC = () => {
           { header: "Name", key: "name" },
           { header: "Email", key: "email" },
           { header: "Role", key: "role" },
+          { header: "Password", key: "password" },
         ]}
         idKey="user_id"
         onEdit={(user) => {
@@ -88,8 +90,9 @@ const AdminUsers: React.FC = () => {
             { label: "Name", key: "name", type: "text" },
             { label: "Email", key: "email", type: "text" },
             { label: "Role", key: "role", type: "text" },
+            { label: "Password", key: "password", type: "text" },
           ]}
-          initialValues={{ name: "", email: "", role: "" }}
+          initialValues={{ name: "", email: "", role: "", password: "" }}
           onClose={() => setIsCreateModalOpen(false)}
           onSubmit={(values) =>
             handleCreateUser(values as Omit<User, "user_id">)
@@ -103,8 +106,9 @@ const AdminUsers: React.FC = () => {
             { label: "Name", key: "name", type: "text" },
             { label: "Email", key: "email", type: "text" },
             { label: "Role", key: "role", type: "text" },
+            { label: "Password", key: "password", type: "text" },
           ]}
-          initialValues={selectedUser}
+          initialValues={{ ...selectedUser, password: "" }}
           onClose={() => setIsEditModalOpen(false)}
           onSubmit={(values) => handleUpdateUser(values as User)}
         />
