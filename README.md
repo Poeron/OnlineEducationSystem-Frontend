@@ -132,7 +132,7 @@ src/
 ### Kurulum
 ```bash
 # Repository'yi klonlayın
-git clone [https://github.com/Poeron/OnlineEducationSystem-Frontend.git]
+git clone https://github.com/Poeron/OnlineEducationSystem-Frontend.git
 
 # Proje dizinine gidin
 cd OnlineEducationSystem-Frontend
